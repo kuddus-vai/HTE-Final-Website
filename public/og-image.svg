@@ -1,0 +1,76 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark tech background -->
+  <rect width="1200" height="630" fill="#070A12"/>
+  
+  <!-- Ambient cybernetic gradients -->
+  <circle cx="1050" cy="150" r="350" fill="#FF6B00" fill-opacity="0.18" filter="blur(140px)"/>
+  <circle cx="150" cy="500" r="350" fill="#00E5FF" fill-opacity="0.12" filter="blur(140px)"/>
+  
+  <!-- Subtle grid pattern overlay -->
+  <g opacity="0.08" stroke="#FFFFFF" stroke-width="1">
+    <line x1="0" y1="105" x2="1200" y2="105"/>
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
+    <line x1="0" y1="525" x2="1200" y2="525"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+  </g>
+
+  <!-- High-Tech Enterprise Badge -->
+  <rect x="90" y="80" width="340" height="42" rx="21" fill="#FF6B00" fill-opacity="0.15" stroke="#FF6B00" stroke-width="1.5"/>
+  <circle cx="112" cy="101" r="5" fill="#FF8A33"/>
+  <text x="130" y="106" font-family="'JetBrains Mono', monospace, sans-serif" font-size="13" font-weight="700" fill="#FFA149" letter-spacing="2">SMART SOLUTIONS • DIGITAL GROWTH</text>
+
+  <!-- Main Headline -->
+  <text x="90" y="210" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-size="64" font-weight="900" fill="#FFFFFF" letter-spacing="-1">
+    High-Tech Enterprise
+  </text>
+  <text x="90" y="275" font-family="'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="700" fill="#FF7A00">
+    WhatsApp AI & Business Automation
+  </text>
+
+  <!-- Value Description -->
+  <text x="90" y="345" font-family="'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="400" fill="#94A3B8">
+    We engineer 24/7 autonomous WhatsApp bots, CRM workflows & sub-second web platforms.
+  </text>
+  <text x="90" y="380" font-family="'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="400" fill="#94A3B8">
+    Official Meta Cloud API • Pathao & Steadfast 2-Way Webhooks • Zero-Trust Security.
+  </text>
+
+  <!-- Key Metric Badges -->
+  <g transform="translate(90, 440)">
+    <!-- Metric 1 -->
+    <rect x="0" y="0" width="220" height="95" rx="18" fill="#0E1424" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+    <text x="24" y="44" font-family="'Outfit', sans-serif" font-size="32" font-weight="900" fill="#10B981">70%+</text>
+    <text x="24" y="74" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="600" fill="#94A3B8">Inquiries Automated</text>
+
+    <!-- Metric 2 -->
+    <rect x="240" y="0" width="220" height="95" rx="18" fill="#0E1424" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+    <text x="264" y="44" font-family="'Outfit', sans-serif" font-size="32" font-weight="900" fill="#38BDF8">&lt; 3 Sec</text>
+    <text x="264" y="74" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="600" fill="#94A3B8">Bot Response Time</text>
+
+    <!-- Metric 3 -->
+    <rect x="480" y="0" width="220" height="95" rx="18" fill="#0E1424" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+    <text x="504" y="44" font-family="'Outfit', sans-serif" font-size="32" font-weight="900" fill="#F59E0B">100%</text>
+    <text x="504" y="74" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="600" fill="#94A3B8">Recommendation Score</text>
+
+    <!-- Metric 4 (Headquarters) -->
+    <rect x="720" y="0" width="280" height="95" rx="18" fill="#0E1424" stroke="rgba(255,107,0,0.3)" stroke-width="1.5"/>
+    <text x="744" y="42" font-family="'Outfit', sans-serif" font-size="24" font-weight="800" fill="#FFA149">Savar, Dhaka</text>
+    <text x="744" y="74" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" fill="#CBD5E1">hightechenterprise.xyz</text>
+  </g>
+
+  <!-- Bottom Accent bar -->
+  <rect x="0" y="620" width="1200" height="10" fill="url(#brandGradient)"/>
+  <defs>
+    <linearGradient id="brandGradient" x1="0" y1="0" x2="1200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF6B00"/>
+      <stop offset="0.5" stop-color="#FF8A33"/>
+      <stop offset="1" stop-color="#00E5FF"/>
+    </linearGradient>
+  </defs>
+</svg>

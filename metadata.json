@@ -1,0 +1,6 @@
+{
+  "name": "High-Tech Enterprise",
+  "description": "High-Tech Enterprise helps businesses scale with automation, digital systems, WhatsApp auto-reply, CRM flows, and high-performance web platforms.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
