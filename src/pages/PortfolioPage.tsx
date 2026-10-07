@@ -8,15 +8,17 @@ import {
   Sparkles, 
   CheckCircle2, 
   ArrowRight, 
-  Layers, 
-  MessageSquareCode, 
-  ShoppingCart, 
-  Monitor, 
-  Smartphone, 
+  Globe,
+  Shield,
+  Zap,
   Check, 
   Copy,
-  Zap,
-  Filter
+  Smartphone,
+  Bot,
+  Layers,
+  ArrowUpRight,
+  Star,
+  Building2
 } from 'lucide-react';
 
 interface PortfolioPageProps {
@@ -31,16 +33,22 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   onLaunchLiveDemo
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [spotlightTab, setSpotlightTab] = useState<'wpl' | 'optimum'>('wpl');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const categories = [
-    { id: 'all', label: 'All Live Demos', count: LIVE_DEMOS_DATA.length },
-    { id: 'whatsapp', label: 'WhatsApp Bots & AI', count: LIVE_DEMOS_DATA.filter(d => d.category === 'whatsapp').length },
-    { id: 'ecommerce', label: 'eCommerce Stores', count: LIVE_DEMOS_DATA.filter(d => d.category === 'ecommerce').length },
-    { id: 'saas', label: 'SaaS & Workflows', count: LIVE_DEMOS_DATA.filter(d => d.category === 'saas').length },
-    { id: 'pos', label: 'Point of Sale (POS)', count: LIVE_DEMOS_DATA.filter(d => d.category === 'pos').length },
-    { id: 'corporate', label: 'Corporate & Real Estate', count: LIVE_DEMOS_DATA.filter(d => d.category === 'corporate').length },
+    { id: 'all', label: 'All Systems', count: LIVE_DEMOS_DATA.length },
+    { id: 'websites', label: 'Live Client Websites', count: LIVE_DEMOS_DATA.filter(d => d.category === 'websites').length },
+    { id: 'intelligence', label: 'Cyber-Threat & Intelligence', count: LIVE_DEMOS_DATA.filter(d => d.category === 'intelligence').length },
+    { id: 'whatsapp', label: 'WhatsApp AI Bots', count: LIVE_DEMOS_DATA.filter(d => d.category === 'whatsapp').length },
+    { id: 'software', label: 'Enterprise & POS Software', count: LIVE_DEMOS_DATA.filter(d => d.category === 'software').length },
   ];
+
+  const featuredWpl = LIVE_DEMOS_DATA.find(d => d.id === 'demo-wpl-pureflow') || LIVE_DEMOS_DATA[0];
+  const featuredOptimum = LIVE_DEMOS_DATA.find(d => d.id === 'demo-optimum-power') || LIVE_DEMOS_DATA[1];
+  const websiteDemos = LIVE_DEMOS_DATA.filter(d => d.category === 'websites');
+  const intelligenceDemo = LIVE_DEMOS_DATA.find(d => d.category === 'intelligence') || LIVE_DEMOS_DATA[0];
+  const automationDemos = LIVE_DEMOS_DATA.filter(d => d.category === 'whatsapp' || d.category === 'software');
 
   const filteredDemos = selectedCategory === 'all'
     ? LIVE_DEMOS_DATA
@@ -53,21 +61,438 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const renderCard = (demo: LiveDemoItem, isProductionWebsite = false) => {
+    const isWpl = demo.id === 'demo-wpl-pureflow';
+    const isFeatured = demo.id === 'demo-optimum-power' || isWpl;
+    const isAumecho = demo.id === 'demo-aumecho-sanctuary';
+
+    return (
+      <div
+        key={demo.id}
+        className={`rounded-2xl bg-[#0C101C] overflow-hidden flex flex-col justify-between transition-all duration-300 group shadow-lg hover:-translate-y-1 ${
+          isWpl
+            ? 'border-2 border-cyan-500/70 ring-1 ring-cyan-500/25 shadow-cyan-500/10'
+            : isFeatured 
+            ? 'border-2 border-[#FF7A00]/70 ring-1 ring-[#FF7A00]/25 shadow-[#FF7A00]/10' 
+            : isAumecho
+            ? 'border-2 border-rose-500/60 ring-1 ring-rose-500/20 hover:border-rose-400 shadow-rose-500/10'
+            : 'border border-white/10 hover:border-[#FF6B00]/40'
+        }`}
+      >
+        {/* Visual Preview */}
+        <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
+          {demo.previewImageUrl ? (
+            <img
+              src={demo.previewImageUrl}
+              alt={demo.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-85 group-hover:opacity-100"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-[#101726] text-slate-500">
+              <Play className="w-10 h-10 opacity-30" />
+            </div>
+          )}
+
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0C101C] via-transparent to-black/50"></div>
+
+          {/* Top Status Pill */}
+          <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+            {isWpl ? (
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 backdrop-blur-md flex items-center gap-1.5 shadow-md">
+                <Star className="w-3 h-3 text-cyan-400 fill-current" />
+                <span>Featured US Flagship</span>
+              </span>
+            ) : isFeatured ? (
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-[#FF7A00]/25 text-[#FFB370] border border-[#FF7A00]/60 backdrop-blur-md flex items-center gap-1.5 shadow-md">
+                <Star className="w-3 h-3 text-[#FF7A00] fill-current" />
+                <span>Featured Client Project</span>
+              </span>
+            ) : isAumecho ? (
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-rose-950/90 text-rose-300 border border-rose-500/60 backdrop-blur-md flex items-center gap-1.5 shadow-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                <span>★ YouTube Channel Website</span>
+              </span>
+            ) : isProductionWebsite ? (
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1.5 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Active Production Site</span>
+              </span>
+            ) : demo.category === 'intelligence' ? (
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-950/90 text-emerald-400 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1.5 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Live Threat Telemetry</span>
+              </span>
+            ) : (
+              <span className="text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full bg-[#FF6B00]/20 text-[#FFA149] border border-[#FF6B00]/40 backdrop-blur-md flex items-center gap-1.5 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF7A00]"></span>
+                <span>Interactive Sandbox</span>
+              </span>
+            )}
+
+            <span className="text-[10px] font-mono text-slate-300 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md border border-white/10">
+              {demo.industry}
+            </span>
+          </div>
+
+          {/* Center Play Button Overlay */}
+          <button
+            onClick={() => onLaunchLiveDemo(demo)}
+            className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-[#FF6B00] text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 shadow-2xl z-10"
+            aria-label={`Launch simulator for ${demo.title}`}
+          >
+            <Play className="w-5 h-5 fill-current ml-0.5" />
+          </button>
+        </div>
+
+        {/* Card Content */}
+        <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+          <div className="space-y-2.5">
+            <div className="flex items-baseline justify-between gap-2">
+              <span className={`text-xs font-mono font-semibold flex items-center gap-1 ${isAumecho ? 'text-rose-400' : 'text-[#FFA149]'}`}>
+                {isFeatured && <Star className="w-3 h-3 fill-current text-[#FF7A00]" />}
+                {isAumecho && <span className="text-rose-500">▶</span>}
+                <span>{demo.clientName}</span>
+              </span>
+            </div>
+
+            <h3 className="text-base font-bold text-white group-hover:text-[#FFA149] transition-colors leading-snug font-['Outfit',sans-serif]">
+              {demo.title}
+            </h3>
+
+            <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+              {demo.summary}
+            </p>
+
+            {/* Performance metric badge */}
+            <div className="p-2 rounded-xl bg-white/5 border border-white/10 text-[11px] text-[#FFA149] font-medium flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-[#FF7A00] shrink-0" />
+              <span className="truncate">{demo.metrics}</span>
+            </div>
+
+            {/* Tags */}
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {demo.tags.slice(0, 3).map((tag) => (
+                <span key={tag} className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-400 border border-white/5">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Action Row */}
+          <div className="pt-3 border-t border-white/10 flex items-center gap-2">
+            <button
+              onClick={() => onLaunchLiveDemo(demo)}
+              className="flex-1 py-2 px-3 rounded-xl bg-[#FF6B00] hover:bg-[#E55A00] text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Launch Simulator</span>
+            </button>
+
+            {isProductionWebsite && (
+              <a
+                href={demo.liveDemoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/15 transition-colors flex items-center gap-1"
+                title="Open live website in new tab"
+              >
+                <span>Live Site</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            )}
+
+            <button
+              onClick={(e) => handleCopyLink(demo, e)}
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-colors shrink-0"
+              title="Copy URL"
+            >
+              {copiedId === demo.id ? (
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+              ) : (
+                <Copy className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="pt-8 pb-20 space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="pt-8 pb-20 space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       {/* Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF6B00]/10 border border-[#FF6B00]/30 text-[#FFA149] text-xs font-mono">
           <Play className="w-3.5 h-3.5 fill-current" />
-          <span>INTERACTIVE LIVE DEMO & PORTFOLIO HUB</span>
+          <span>PRODUCTION PORTFOLIO & INTERACTIVE LABS</span>
         </div>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white font-['Outfit',sans-serif] tracking-tight">
-          Test Our Autonomous Systems in Action
+          Test Our Autonomous Systems & Live Deployments
         </h1>
         <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-          Explore our real-world client deployments and live interactive demo sandboxes. Launch live prototypes in our simulated device viewer or open external demo links.
+          Explore our {websiteDemos.length} live client websites running in production, 24/7 Enterprise Cyber-Threat & Intelligence dashboard, and interactive automation sandboxes.
         </p>
+
+        {/* Live Metrics Ticker Bar */}
+        <div className="pt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-left">
+          <div className="p-3 rounded-xl bg-[#0E1424] border border-white/10">
+            <div className="text-[10px] font-mono text-slate-400 uppercase">Featured Flagships</div>
+            <div className="text-base sm:text-lg font-mono font-bold text-[#FFA149]">WPL (US) & Optimum</div>
+          </div>
+          <div className="p-3 rounded-xl bg-[#0E1424] border border-white/10">
+            <div className="text-[10px] font-mono text-slate-400 uppercase">Live Client Deployments</div>
+            <div className="text-lg font-mono font-bold text-emerald-400">{websiteDemos.length} Active Sites</div>
+          </div>
+          <div className="p-3 rounded-xl bg-[#0E1424] border border-white/10">
+            <div className="text-[10px] font-mono text-slate-400 uppercase">Interactive Sandboxes</div>
+            <div className="text-lg font-mono font-bold text-cyan-400">4 Simulators</div>
+          </div>
+          <div className="p-3 rounded-xl bg-[#0E1424] border border-white/10">
+            <div className="text-[10px] font-mono text-slate-400 uppercase">Infrastructure Telemetry</div>
+            <div className="text-lg font-mono font-bold text-white">99.98% Monitored</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Featured Flagship Spotlight Section with Dual Tabs */}
+      <div className="space-y-3">
+        {/* Spotlight Selector Tabs */}
+        <div className="flex items-center justify-between flex-wrap gap-2 px-1">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Spotlight Flagship:</span>
+            <div className="inline-flex p-1 rounded-xl bg-[#0B101D] border border-white/10">
+              <button
+                onClick={() => setSpotlightTab('wpl')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                  spotlightTab === 'wpl'
+                    ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <span>🇺🇸 WPL PureFlow (USA)</span>
+                <span className="text-[10px] font-mono opacity-80">Liquid Futurism</span>
+              </button>
+              <button
+                onClick={() => setSpotlightTab('optimum')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                  spotlightTab === 'optimum'
+                    ? 'bg-[#FF6B00] text-white font-bold shadow-md shadow-[#FF6B00]/20'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <span>🇧🇩 Optimum Power (BD)</span>
+                <span className="text-[10px] font-mono opacity-80">Substations</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="text-xs font-mono text-slate-400 hidden sm:block">
+            {spotlightTab === 'wpl' ? 'N 40° 42\' • W 74° 00\' | Sheffield LDN → NYC' : 'Dhaka 1217 • Heavy Power Grid'}
+          </div>
+        </div>
+
+        {/* WPL PureFlow Spotlight Banner */}
+        {spotlightTab === 'wpl' ? (
+          <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#030914] via-[#071728] to-[#040C1A] border-2 border-cyan-500/60 relative overflow-hidden shadow-2xl shadow-cyan-500/10 transition-all duration-300">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+              <div className="space-y-3.5 max-w-3xl">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-cyan-950/90 text-cyan-300 border border-cyan-500/60 flex items-center gap-1.5 shadow-sm">
+                    <Star className="w-3.5 h-3.5 text-cyan-400 fill-current" />
+                    <span>★ FEATURED US FLAGSHIP CLIENT PROJECT</span>
+                  </span>
+                  <span className="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2.5 py-1 rounded-full border border-cyan-500/40 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span>Live in Production • Sheffield UK → New York, USA</span>
+                  </span>
+                  <span className="text-[11px] font-mono text-slate-400 bg-black/40 px-2.5 py-0.5 rounded border border-white/10 hidden sm:inline-block">
+                    N 40° 42' • W 74° 00'
+                  </span>
+                </div>
+
+                <div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-['Outfit',sans-serif] tracking-tight">
+                    WPL PureFlow — Purity by Design
+                  </h2>
+                  <p className="text-xs font-mono text-cyan-400 mt-0.5">
+                    Liquid Futurism in Advanced Water Purification, Reverse Osmosis & Deionization (USA)
+                  </p>
+                </div>
+
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                  Liquid Futurism in advanced water purification. Built in Sheffield since 1992, now plumbed into 11,000 American homes, medical clinics, and premier hospitality properties — quietly, under the counter, for the next thirty years. Designed with atmospheric fluid dynamics, deep cyan liquid aesthetics, and interactive architectural specifications.
+                </p>
+
+                {/* Highlight Metric Badges */}
+                <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
+                  <span className="px-3 py-1 rounded-lg bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>0.52s First Contentful Paint</span>
+                  </span>
+                  <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-emerald-400 flex items-center gap-1.5">
+                    <span>💧</span>
+                    <span>11,000+ US Installations</span>
+                  </span>
+                  <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200 flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Awwwards-Grade Liquid Futurism</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 font-mono text-xs text-slate-400 pt-1">
+                  <span>Production Domain:</span>
+                  <a 
+                    href="https://usa-pureflow.pages.dev/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="underline text-white hover:text-cyan-300 flex items-center gap-1 font-semibold"
+                  >
+                    <span>https://usa-pureflow.pages.dev/</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Action CTAs */}
+              <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0 min-w-[240px]">
+                <a
+                  href="https://usa-pureflow.pages.dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-5 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl shadow-cyan-500/30 transition-all"
+                >
+                  <span>Visit usa-pureflow.pages.dev</span>
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => onLaunchLiveDemo(featuredWpl)}
+                  className="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 border border-white/15 transition-colors"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current text-cyan-400" />
+                  <span>Launch in Device Simulator</span>
+                </button>
+                <button
+                  onClick={(e) => handleCopyLink(featuredWpl, e)}
+                  className="px-5 py-2.5 rounded-xl bg-black/40 hover:bg-black/60 text-slate-300 hover:text-white font-mono text-xs flex items-center justify-center gap-1.5 border border-white/10 transition-colors"
+                >
+                  {copiedId === featuredWpl.id ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-cyan-400" />
+                      <span className="text-cyan-400">Live URL Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Project URL</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Optimum Power Engineering Spotlight Banner */
+          <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#0C1424] via-[#101C34] to-[#0A0E18] border-2 border-[#FF7A00]/50 relative overflow-hidden shadow-2xl shadow-[#FF7A00]/10 transition-all duration-300">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[#FF6B00]/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+              <div className="space-y-3.5 max-w-3xl">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[#FF7A00]/25 text-[#FFB370] border border-[#FF7A00]/60 flex items-center gap-1.5 shadow-sm">
+                    <Star className="w-3.5 h-3.5 text-[#FF7A00] fill-current" />
+                    <span>★ FEATURED ENTERPRISE CLIENT PROJECT</span>
+                  </span>
+                  <span className="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-500/40 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Live in Production • Dhaka, Bangladesh</span>
+                  </span>
+                </div>
+
+                <div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-['Outfit',sans-serif] tracking-tight">
+                    Optimum Power Engineering Ltd.
+                  </h2>
+                  <p className="text-xs font-mono text-[#FFA149] mt-0.5">
+                    Heavy Electrical Engineering, Substation Solutions & Power Infrastructure
+                  </p>
+                </div>
+
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                  Corporate web engineering platform for heavy electrical and substation solutions in Bangladesh. Built with sub-second Next.js architecture, comprehensive industrial transformer specifications, technical catalog downloads, and instant WhatsApp B2B RFQ routing for factories, developers, and contractors nationwide.
+                </p>
+
+                {/* Highlight Metric Badges */}
+                <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
+                  <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-emerald-400 flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>99.4% Mobile Performance</span>
+                  </span>
+                  <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[#FFA149] flex items-center gap-1.5">
+                    <span className="text-[#FF7A00]">📈</span>
+                    <span>3.8x B2B RFQ Inquiries</span>
+                  </span>
+                  <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-cyan-300 flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Next.js Architecture</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 font-mono text-xs text-slate-400 pt-1">
+                  <span>Production Domain:</span>
+                  <a 
+                    href="https://optimumpowerengineering.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="underline text-white hover:text-[#FFA149] flex items-center gap-1 font-semibold"
+                  >
+                    <span>https://optimumpowerengineering.com/</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-[#FF7A00]" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Action CTAs */}
+              <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0 min-w-[240px]">
+                <a
+                  href="https://optimumpowerengineering.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-5 py-3 rounded-xl bg-[#FF6B00] hover:bg-[#E55A00] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl shadow-[#FF6B00]/30 transition-all"
+                >
+                  <span>Visit optimumpowerengineering.com</span>
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => onLaunchLiveDemo(featuredOptimum)}
+                  className="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 border border-white/15 transition-colors"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current text-[#FF7A00]" />
+                  <span>Launch in Device Simulator</span>
+                </button>
+                <button
+                  onClick={(e) => handleCopyLink(featuredOptimum, e)}
+                  className="px-5 py-2.5 rounded-xl bg-black/40 hover:bg-black/60 text-slate-300 hover:text-white font-mono text-xs flex items-center justify-center gap-1.5 border border-white/10 transition-colors"
+                >
+                  {copiedId === featuredOptimum.id ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-400">Live URL Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Project URL</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Category Filter Pills */}
@@ -95,139 +520,144 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
         })}
       </div>
 
-      {/* Live Demos Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredDemos.map((demo) => (
-          <div
-            key={demo.id}
-            className="rounded-3xl bg-[#0C101C] border border-white/10 overflow-hidden flex flex-col justify-between hover:border-[#FF6B00]/50 transition-all group shadow-xl hover:-translate-y-1 duration-300"
-          >
-            {/* Visual Thumbnail & Badges */}
-            <div className="relative aspect-video overflow-hidden bg-slate-900">
-              {demo.previewImageUrl ? (
-                <img
-                  src={demo.previewImageUrl}
-                  alt={demo.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#101726] to-[#080B13] text-slate-500">
-                  <Play className="w-12 h-12 opacity-30" />
+      {/* Structured Content Sections when "all" is active */}
+      {selectedCategory === 'all' ? (
+        <div className="space-y-16">
+          
+          {/* Section 1: Live Production Client Websites */}
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-3 border-b border-white/10">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 font-semibold mb-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>PRODUCTION CLIENT DEPLOYMENTS</span>
                 </div>
-              )}
-              
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0C101C] via-transparent to-black/40"></div>
-
-              {/* Badges on preview */}
-              <div className="absolute top-3 left-3 flex items-center gap-2">
-                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md text-[#FFA149] border border-white/20">
-                  {demo.badge}
-                </span>
+                <h2 className="text-xl sm:text-2xl font-bold text-white font-['Outfit',sans-serif]">
+                  Live Production Client Websites ({websiteDemos.length})
+                </h2>
               </div>
-
-              <div className="absolute top-3 right-3">
-                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Live Demo
-                </span>
-              </div>
-
-              {/* Quick Launch Overlay Button */}
-              <button
-                onClick={() => onLaunchLiveDemo(demo)}
-                className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-[#FF6B00] text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 shadow-2xl"
-                aria-label={`Play demo for ${demo.title}`}
-              >
-                <Play className="w-5 h-5 fill-current ml-0.5" />
-              </button>
+              <p className="text-xs text-slate-400 max-w-md text-left sm:text-right">
+                High-conversion Next.js web applications, dark luxury boutiques, and engineering portals running live in Bangladesh.
+              </p>
             </div>
 
-            {/* Content Details */}
-            <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-              <div>
-                <div className="text-xs text-slate-400 mb-1">
-                  Industry: <span className="text-slate-200 font-medium">{demo.industry}</span>
-                </div>
-                <h3 className="text-lg font-bold text-white group-hover:text-[#FFA149] transition-colors font-['Outfit',sans-serif] leading-snug">
-                  {demo.title}
-                </h3>
-                <p className="text-xs text-slate-300 mt-2 line-clamp-2 leading-relaxed">
-                  {demo.summary}
-                </p>
-
-                {/* Key Metrics Highlight */}
-                <div className="mt-3 p-2.5 rounded-xl bg-white/5 border border-white/5 text-[11px] text-[#FFA149] font-medium flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-[#FF7A00] shrink-0" />
-                  <span className="truncate">{demo.metrics}</span>
-                </div>
-
-                {/* Case Study Bullets */}
-                <ul className="mt-3 space-y-1.5 text-[11px] text-slate-400">
-                  {demo.caseStudyHighlights.slice(0, 2).map((highlight, idx) => (
-                    <li key={idx} className="flex items-start gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="line-clamp-1">{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Tech Tags */}
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {demo.tags.slice(0, 3).map((tag) => (
-                    <span key={tag} className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-400 border border-white/5">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="pt-4 border-t border-white/10 space-y-2">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => onLaunchLiveDemo(demo)}
-                    className="flex-1 py-2.5 px-4 rounded-xl bg-[#FF6B00] hover:bg-[#E55A00] text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-md"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-current" />
-                    <span>Launch Live Demo</span>
-                  </button>
-
-                  <button
-                    onClick={(e) => handleCopyLink(demo, e)}
-                    className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-colors"
-                    title="Copy Live Demo URL"
-                  >
-                    {copiedId === demo.id ? (
-                      <Check className="w-4 h-4 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
-
-                  <a
-                    href={demo.liveDemoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-colors"
-                    title="Open in new window"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-
-                <div className="text-[10px] font-mono text-slate-400 truncate text-center">
-                  Destination: <span className="text-slate-300">{demo.liveDemoUrl}</span>
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {websiteDemos.map((demo) => renderCard(demo, true))}
             </div>
           </div>
-        ))}
-      </div>
+
+          {/* Section 2: Cyber-Threat & Security Intelligence */}
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-3 border-b border-white/10">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 font-semibold mb-1">
+                  <Shield className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>IN-HOUSE THREAT INTELLIGENCE & TELEMETRY</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white font-['Outfit',sans-serif]">
+                  Cyber-Threat & Resilience Telemetry (1)
+                </h2>
+              </div>
+              <p className="text-xs text-slate-400 max-w-md text-left sm:text-right">
+                Active 24/7 global telemetry dashboard monitoring API heartbeats, infrastructure latency, and cyber-threat vectors.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {renderCard(intelligenceDemo, false)}
+              
+              {/* Telemetry quick stats card */}
+              <div className="p-6 rounded-2xl bg-[#090E1A] border border-emerald-500/30 flex flex-col justify-between space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono text-emerald-400 font-bold flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span>TELEMETRY METRICS</span>
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                      Global Edge Nodes
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white font-['Outfit',sans-serif]">
+                    Enterprise Resilience Architecture
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Designed for high-tech enterprise clients requiring verifiable sub-second uptime, DDoS mitigation visibility, and live infrastructure status feeds across North America, Europe, and Asia-Pacific.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <div className="text-[10px] font-mono text-slate-400">System Availability</div>
+                    <div className="text-base font-mono font-bold text-emerald-400">99.98% Monitored</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <div className="text-[10px] font-mono text-slate-400">Threat Ingestion Rate</div>
+                    <div className="text-base font-mono font-bold text-cyan-400">Real-time Stream</div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <a
+                    href="https://monitor.hightechenterprise.xyz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all"
+                  >
+                    <span>Open Telemetry Hub: monitor.hightechenterprise.xyz</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 3: Interactive Autonomous Bots & Business Software */}
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-3 border-b border-white/10">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-mono text-[#FFA149] font-semibold mb-1">
+                  <Zap className="w-3.5 h-3.5 text-[#FF7A00]" />
+                  <span>AUTONOMOUS SYSTEMS & BUSINESS ENGINES</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white font-['Outfit',sans-serif]">
+                  Interactive Autonomous Sandboxes (4)
+                </h2>
+              </div>
+              <p className="text-xs text-slate-400 max-w-md text-left sm:text-right">
+                Test simulated multi-turn WhatsApp sales, real-time courier tracking, offline retail POS, and autonomous workflow engines.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {automationDemos.map((demo) => renderCard(demo, false))}
+            </div>
+          </div>
+
+        </div>
+      ) : (
+        /* Filtered Grid View */
+        <div className="space-y-6">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <h2 className="text-xl font-bold text-white font-['Outfit',sans-serif]">
+              {categories.find(c => c.id === selectedCategory)?.label} ({filteredDemos.length})
+            </h2>
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className="text-xs font-mono text-[#FFA149] hover:underline"
+            >
+              View All Systems
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredDemos.map((demo) => renderCard(demo, demo.category === 'websites'))}
+          </div>
+        </div>
+      )}
 
       {/* Free Custom Demo Offer Banner */}
-      <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-[#0F1626] via-[#141E34] to-[#0A0E17] border border-white/15 relative overflow-hidden shadow-2xl">
+      <div className="p-8 sm:p-10 rounded-2xl bg-gradient-to-r from-[#0F1626] via-[#141E34] to-[#0A0E17] border border-white/15 relative overflow-hidden shadow-2xl">
         <div className="relative z-10 max-w-2xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF6B00]/15 border border-[#FF6B00]/30 text-[#FFA149] text-xs font-mono">
             <Sparkles className="w-3.5 h-3.5" />
@@ -238,14 +668,14 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
             Want a Custom Working Demo for Your Exact Brand?
           </h2>
           
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
             We will engineer a functional interactive prototype of your business's WhatsApp AI bot or high-performance website within 48 hours—completely free before you pay a single Taka or Dollar.
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-4">
+          <div className="pt-2 flex flex-wrap items-center gap-3">
             <button
               onClick={onOpenDemoModal}
-              className="px-6 py-3.5 rounded-xl bg-[#FF6B00] hover:bg-[#E55A00] text-white text-xs sm:text-sm font-bold transition-all shadow-lg flex items-center gap-2"
+              className="px-5 py-3 rounded-xl bg-[#FF6B00] hover:bg-[#E55A00] text-white text-xs sm:text-sm font-bold transition-all shadow-lg flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
               <span>Claim Free Website & Bot Prototype</span>
@@ -255,7 +685,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
               href={COMPANY_INFO.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-semibold border border-white/15 transition-colors"
+              className="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-semibold border border-white/15 transition-colors"
             >
               Ask on WhatsApp: {COMPANY_INFO.phone}
             </a>

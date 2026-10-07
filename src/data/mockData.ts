@@ -1,4 +1,4 @@
-import { ServiceItem, ProductItem, PricingPlan, TestimonialItem, OfficeLocation } from '../types';
+import { ServiceItem, ProductItem, PricingPlan, TestimonialItem, OfficeLocation, SideProjectItem } from '../types';
 
 export const COMPANY_INFO = {
   name: 'High-Tech Enterprise',
@@ -10,6 +10,7 @@ export const COMPANY_INFO = {
   whatsappUrl: 'https://wa.me/8801996921149',
   email: 'hightechenterprisebd@gmail.com',
   website: 'hightechenterprise.xyz',
+  monitorUrl: 'https://monitor.hightechenterprise.xyz/',
   facebookUrl: 'https://facebook.com/HighTechEnterprise48',
   instagramUrl: 'https://instagram.com/hightechenterprisebd',
   stats: {
@@ -21,6 +22,28 @@ export const COMPANY_INFO = {
     uptime: '99.98%'
   }
 };
+
+export const SIDE_PROJECTS_DATA: SideProjectItem[] = [
+  {
+    id: 'enterprise-monitor',
+    name: 'Enterprise Pulse Monitor',
+    badge: 'Official Side Project',
+    url: 'https://monitor.hightechenterprise.xyz/',
+    domain: 'monitor.hightechenterprise.xyz',
+    status: 'Operational',
+    uptime: '99.98% Uptime SLA',
+    description: 'Real-time global cyber-threat & tech-intelligence dashboard for high-tech enterprise clients.',
+    longDescription: 'Enterprise Pulse Monitor (monitor.hightechenterprise.xyz) is our proprietary in-house Real-time global cyber-threat & tech-intelligence dashboard for high-tech enterprise clients. It monitors global threat vectors, zero-day vulnerabilities, API endpoint integrity, and server heartbeat telemetry around the clock.',
+    features: [
+      'Real-time global cyber-threat intelligence and active vulnerability feeds',
+      'Continuous 60s multi-region API heartbeat & webhook integrity monitoring',
+      'Automated zero-day exploit risk assessment & DDoS traffic mitigation telemetry',
+      'Instant automated incident dispatch via secure channels to high-tech enterprise clients'
+    ],
+    techStack: ['Cyber-Threat Telemetry', 'Next.js 15', 'Edge Telemetry', 'Cloudflare WAF', 'Global Threat Feeds'],
+    category: 'Cyber-Threat & Tech-Intelligence'
+  }
+];
 
 export const SERVICES_DATA: ServiceItem[] = [
   {
@@ -87,14 +110,14 @@ export const SERVICES_DATA: ServiceItem[] = [
     id: 'enterprise-resilience',
     title: 'Enterprise Resilience & Security',
     tagline: 'Automation requires absolute trust & defense-in-depth',
-    description: 'We implement SOC-2 compliant logic, role-based access control, and end-to-end encryption for every internal database and customer-facing portal.',
+    description: 'We implement zero-trust access control, role-based permissions, and end-to-end encryption for every internal database and customer-facing portal.',
     features: [
       'End-to-end data encryption at rest and in transit',
       'Zero-trust API boundaries with rate-limiting & DDoS shielding',
       'Granular audit logging & tamper-evident event streams',
       'Full compliance with privacy standards & strict data governance'
     ],
-    metrics: 'SOC-2 compliant architecture',
+    metrics: 'Zero-trust protected architecture',
     iconName: 'ShieldCheck',
     category: 'security'
   },
@@ -239,7 +262,7 @@ export const PRICING_DATA: PricingPlan[] = [
       'Scientific Conversion Rate Optimization (CRO) funnel',
       'Unlimited custom AI workflow automations & RAG agents',
       'Enterprise ERP, POS and inventory database integration',
-      'SOC-2 compliant end-to-end security hardening',
+      'End-to-end data encryption & zero-trust network boundaries',
       'Dedicated cloud server infrastructure with 99.98% SLA',
       'Quarterly performance & conversion audit',
       'Dedicated Technical Account Manager'
@@ -273,25 +296,25 @@ export const TESTIMONIALS_DATA: TestimonialItem[] = [
   },
   {
     id: 'rev-3',
-    clientName: 'Syeda Nafisa Karim',
-    role: 'Operations Head',
-    company: 'Lumiere Beauty Labs',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    clientName: 'Engr. Rafiqul Islam',
+    role: 'Managing Director',
+    company: 'Optimum Power Engineering Ltd.',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     rating: 5,
-    reviewText: 'The WhatsApp abandoned cart recovery automation alone paid for their entire service in the first 12 days. We recovered over ৳ 320,000 worth of pending orders. Truly high-tech and professional.',
+    reviewText: 'High-Tech Enterprise delivered our corporate engineering platform at optimumpowerengineering.com with flawless performance. High-voltage transformer RFQ submissions and WhatsApp engineering inquiries increased almost fourfold. An exceptional engineering partner.',
     verified: true,
-    businessType: 'Retail & Cosmetics'
+    businessType: 'Heavy Engineering & Substation'
   },
   {
     id: 'rev-4',
-    clientName: 'Arif Chowdhury',
-    role: 'Co-Founder',
-    company: 'Apex Digital Real Estate',
+    clientName: 'Tanvir Ahmed',
+    role: 'Founder & Brand Director',
+    company: 'Urban Beast BD',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     rating: 5,
-    reviewText: 'The new high-performance web platform loads in under 1 second. Our Google SEO ranking jumped to page 1 for multiple high-intent keywords, and qualified leads are automatically routed to our sales agents via CRM. Outstanding work.',
+    reviewText: 'ShopFlow™ is hands-down the fastest eCommerce platform in Bangladesh. Our mobile conversion rates shot up by 34%, and 1-tap WhatsApp checkout coupled with direct courier sync made nationwide parcel fulfillment effortless.',
     verified: true,
-    businessType: 'Real Estate & Properties'
+    businessType: 'Streetwear & Apparel eCommerce'
   }
 ];
 

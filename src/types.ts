@@ -64,12 +64,12 @@ export interface OfficeLocation {
   timezone: string;
 }
 
-export type PageId = 'home' | 'services' | 'products' | 'demos' | 'pricing' | 'about' | 'contact';
+export type PageId = 'home' | 'services' | 'products' | 'demos' | 'portfolio' | 'pricing' | 'about' | 'contact';
 
 export interface LiveDemoItem {
   id: string;
   title: string;
-  category: 'whatsapp' | 'ecommerce' | 'saas' | 'pos' | 'corporate';
+  category: 'whatsapp' | 'ecommerce' | 'saas' | 'pos' | 'corporate' | 'side-projects' | 'websites' | 'intelligence' | 'software';
   badge: string;
   clientName: string;
   industry: string;
@@ -81,4 +81,19 @@ export interface LiveDemoItem {
   previewType: 'interactive-whatsapp' | 'interactive-store' | 'interactive-pos' | 'interactive-crm' | 'iframe';
   previewImageUrl?: string;
   caseStudyHighlights: string[];
+}
+
+export interface SideProjectItem {
+  id: string;
+  name: string;
+  badge: string;
+  url: string;
+  domain: string;
+  status: 'Operational' | 'Beta' | 'Active';
+  uptime: string;
+  description: string;
+  longDescription: string;
+  features: string[];
+  techStack: string[];
+  category: string;
 }

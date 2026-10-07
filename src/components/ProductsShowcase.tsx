@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PRODUCTS_DATA, COMPANY_INFO } from '../data/mockData';
+import { SHOPFLOW_WEBSITES_DEMO } from '../data/liveDemos';
 import { 
   Sparkles, 
   CheckCircle, 
@@ -7,9 +8,10 @@ import {
   Smartphone, 
   ShoppingCart, 
   Layers, 
-  Cpu,
-  Zap,
-  ExternalLink
+  Cpu, 
+  Zap, 
+  ExternalLink,
+  Globe
 } from 'lucide-react';
 
 import { PageId } from '../types';
@@ -201,10 +203,32 @@ export const ProductsShowcase: React.FC<ProductsShowcaseProps> = ({
                   </div>
 
                   <div className="p-4 rounded-xl bg-[#0F1728] border border-white/10 space-y-2 text-xs">
-                    <div className="font-bold text-white">Full Local Courier Ecosystem</div>
-                    <div className="text-slate-300">
-                      Direct integration with Pathao Courier & Steadfast API. Customers receive tracking URL directly on WhatsApp with delivery updates.
+                    <div className="font-bold text-white flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <Globe className="w-3.5 h-3.5 text-[#FF7A00]" />
+                        <span>{SHOPFLOW_WEBSITES_DEMO.length}+ Live Client Websites Active</span>
+                      </span>
+                      <span className="text-[10px] text-emerald-400 font-mono">Real Production</span>
                     </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                      {SHOPFLOW_WEBSITES_DEMO.map((site) => (
+                        <a
+                          key={site.id}
+                          href={site.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-[#FF6B00]/20 border border-white/10 hover:border-[#FF6B00]/40 flex items-center justify-between transition-colors group"
+                        >
+                          <span className="text-[11px] text-slate-200 font-medium group-hover:text-white truncate">{site.name}</span>
+                          <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-[#FFA149]" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-xs text-emerald-300 flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                    <span>Pathao Courier & Steadfast API direct 1-click booking active</span>
                   </div>
                 </div>
               )}

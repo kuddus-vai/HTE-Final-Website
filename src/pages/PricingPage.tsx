@@ -42,7 +42,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({ onOpenDemoModal, onNav
     { id: 'cartRecovery', label: 'Automated WhatsApp Abandoned Cart Flow', priceBDT: 5000, priceUSD: 45, days: 1 },
     { id: 'crm', label: 'HubSpot / Zoho / Google Sheets 2-Way CRM Sync', priceBDT: 8000, priceUSD: 70, days: 3 },
     { id: 'pos', label: 'Multi-Branch Offline-First Cloud POS System', priceBDT: 16000, priceUSD: 140, days: 6 },
-    { id: 'security', label: 'Enterprise Security Hardening & Zero-Trust Boundary', priceBDT: 10000, priceUSD: 90, days: 3 }
+    { id: 'security', label: 'Enterprise Data Encryption & Zero-Trust Boundary', priceBDT: 10000, priceUSD: 90, days: 3 }
   ];
 
   const toggleModule = (id: string) => {

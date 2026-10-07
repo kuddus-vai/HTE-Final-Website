@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { COMPANY_INFO, PRICING_DATA, SERVICES_DATA } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
+import { submitQuoteToGmail, PRIMARY_GMAIL } from '../services/quoteService';
 import { 
   MessageCircle, 
   X, 
@@ -32,7 +34,9 @@ import {
   Layers,
   Zap,
   Award,
-  ArrowRight
+  ArrowRight,
+  Activity,
+  Globe
 } from 'lucide-react';
 
 export interface FloatingWhatsAppProps {
@@ -143,17 +147,47 @@ const KNOWLEDGE_TOPICS: KnowledgeTopic[] = [
     description: 'Engineering HQ in Savar, Dhaka 1217. Led by Md. Asaduzzaman. Direct WhatsApp available.',
     descriptionBn: 'আমাদের অফিস সাভার, ঢাকা ১২১৭। সরাসরি কল বা হোয়াটসঅ্যাপে কথা বলুন +880 1996-921149।',
     query: 'Where is your office and who is the founder?'
+  },
+  {
+    id: 'portfolio',
+    icon: Globe,
+    title: 'Client Websites & Live Portfolio',
+    titleBn: 'ক্লায়েন্ট ওয়েবসাইট ও পোর্টফোলিও',
+    tag: '6+ Live Sites',
+    description: 'Explore live client websites: Optimum Power, Druto Bazar BD (Grocery), Urban Beast BD, One Outfit & more.',
+    descriptionBn: 'আমাদের তৈরি করা বাস্তব ক্লায়েন্ট ওয়েবসাইট, গ্রোসারি শপ ও লাইভ ডেমো দেখুন।',
+    query: 'Show me your previous client websites and portfolio'
+  },
+  {
+    id: 'monitor',
+    icon: Activity,
+    title: 'Enterprise Pulse Monitor',
+    titleBn: 'এন্টারপ্রাইজ পালস মনিটর',
+    tag: 'Cyber Intelligence',
+    description: 'Real-time global cyber-threat & tech-intelligence dashboard for high-tech enterprise clients at monitor.hightechenterprise.xyz.',
+    descriptionBn: 'রিয়েল-টাইম গ্লোবাল সাইবার থ্রেট ও টেক ইন্টেলিজেন্স ড্যাশবোর্ড।',
+    query: 'Tell me about your Enterprise Pulse Monitor dashboard'
   }
 ];
 
 export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoModal }) => {
+  const { language: siteLanguage, setLanguage: setSiteLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
   const [inputVal, setInputVal] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [unreadCount, setUnreadCount] = useState(1);
-  const [language, setLanguage] = useState<BotLanguage>('en');
-  const [isMuted, setIsMuted] = useState(false);
+  const [language, setLanguage] = useState<BotLanguage>((siteLanguage as BotLanguage) || 'bn');
+  const [isMuted, setIsMuted] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('ht_whatsapp_sound_muted');
+      return saved !== null ? saved === 'true' : false;
+    } catch {
+      return false;
+    }
+  });
+  const [soundFeedbackText, setSoundFeedbackText] = useState<string | null>(null);
+  const soundFeedbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('chat');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [searchTopic, setSearchTopic] = useState('');
@@ -168,8 +202,8 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Synthesized Web Audio chime (Zero external audio assets)
-  const playSound = (type: 'send' | 'receive') => {
-    if (isMuted) return;
+  const playSound = (type: 'send' | 'receive' | 'preview') => {
+    if (isMuted && type !== 'preview') return;
     try {
       const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!AudioContextClass) return;
@@ -187,6 +221,19 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
         gain.connect(ctx.destination);
         osc.start();
         osc.stop(ctx.currentTime + 0.08);
+      } else if (type === 'preview') {
+        // Quick pleasant chime when visitor unmutes audio
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(580, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.005, ctx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
       } else {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -204,6 +251,40 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
       // Audio context silently ignored if restricted by browser
     }
   };
+
+  // Toggle chime sound with feedback and persistence (without restarting chat session)
+  const handleToggleSound = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    try {
+      localStorage.setItem('ht_whatsapp_sound_muted', String(nextMuted));
+    } catch {
+      // ignore
+    }
+
+    if (!nextMuted) {
+      playSound('preview');
+      setSoundFeedbackText(language === 'en' ? 'Chime sound enabled 🔔' : 'সাউন্ড চালু হয়েছে 🔔');
+    } else {
+      setSoundFeedbackText(language === 'en' ? 'Chime sound muted 🔕' : 'সাউন্ড মিউট করা হয়েছে 🔕');
+    }
+
+    if (soundFeedbackTimeoutRef.current) {
+      clearTimeout(soundFeedbackTimeoutRef.current);
+    }
+    soundFeedbackTimeoutRef.current = setTimeout(() => {
+      setSoundFeedbackText(null);
+    }, 2200);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (soundFeedbackTimeoutRef.current) {
+        clearTimeout(soundFeedbackTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Initial welcome greeting
   const getInitialMessage = (lang: BotLanguage): ChatMessage => ({
@@ -231,19 +312,34 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
     ]
   });
 
-  const [messages, setMessages] = useState<ChatMessage[]>([getInitialMessage('en')]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
+    getInitialMessage((siteLanguage as BotLanguage) || 'bn')
+  ]);
+
+  // Keep bot language synchronized with website language
+  useEffect(() => {
+    const currentBotLang = (siteLanguage as BotLanguage) || 'bn';
+    setLanguage(currentBotLang);
+    if (messages.length <= 1) {
+      setMessages([getInitialMessage(currentBotLang)]);
+    }
+  }, [siteLanguage]);
 
   // Keep chat pinned to bottom
   useEffect(() => {
     if (isOpen && activeTab === 'chat') {
-      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      const container = document.getElementById('concierge-messages-list');
+      if (container) {
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+      }
     }
   }, [messages, isTyping, isOpen, activeTab]);
 
-  // When language toggles, refresh welcome text if conversation just started
+  // When language toggles, refresh welcome text and sync site-wide language
   const handleToggleLanguage = () => {
     const nextLang: BotLanguage = language === 'en' ? 'bn' : 'en';
     setLanguage(nextLang);
+    setSiteLanguage(nextLang);
     if (messages.length <= 2) {
       setMessages([getInitialMessage(nextLang)]);
     }
@@ -276,7 +372,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
         sender: 'bot',
         text: lang === 'en'
           ? `🚀 **High-Tech Enterprise Core Capabilities**:\n\n1️⃣ **WhatsApp AI & Auto-Reply Bot**: 24/7 autonomous customer support via official Meta Cloud API. Automatically takes orders, answers FAQs, sends catalog, and recovers abandoned carts.\n2️⃣ **High-Performance Web Platforms**: Ultra-fast Next.js / React web platforms with sub-second page loads, SEO dominance, and high conversion funnels.\n3️⃣ **Courier & eCommerce Sync**: Two-way automation with Pathao, Steadfast, RedX, Shopify, WooCommerce & custom databases.\n4️⃣ **bKash & Nagad Payment Gateway**: Automated payment reminders and instant transaction verification.`
-          : `🚀 **হাই-টেক এন্টারপ্রাইজ প্রধান সল্যুশনসমূহ**:\n\n১️⃣ **অফিসিয়াল হোয়াটসঅ্যাপ অটোমেশন বট**: মেটা ক্লাউড এপিআইয়ের মাধ্যমে ২৪/৭ স্বয়ংক্রিয় কাস্টমার কেয়ার। পণ্যের তথ্য, অর্ডার গ্রহণ ও অটো কনফার্মেশন।\n২️⃣ **আল্ট্রা-ফাস্ট ওয়েবসাইট প্ল্যাটফর্ম**: নেক্সট.জেএস ও রিয়্যাক্ট প্রযুক্তিতে নির্মিত চোখের পলকে লোড হওয়া আধুনিক ওয়েবসাইট।\n৩️⃣ **কুরিয়ার ও ই-কমার্স ইন্টিগ্রেশন**: পাঠাও, স্টেডফাস্ট ও রেডএক্স এপিআই সিঙ্ক এবং শপিফাই/উকমার্সের সাথে অটো অর্ডার পাঠানো।\n৪️⃣ **বিকাশ ও নগদ পেমেন্ট গেটওয়ে**: পেমেন্ট ভেরিফিকেশন ও ডিজিটাল ইনভয়েস জেনারেশন।`,
+          : `🚀 **হাই-টেক এন্টারপ্রাইজ প্রধান সল্যুশনসমূহ**:\n\n১️⃣ **অফিসিয়াল হোয়াটসঅ্যাপ অটোমেশন বট**: মেটা ক্লাউড এপিআইয়ের মাধ্যমে ২৪/৭ স্বয়ংক্রিয় কাস্টমার কেয়ার। পণ্যের তথ্য, অর্ডার গ্রহণ ও অটো কনফার্মেশন।\n২️⃣ **আল্ট্রা-ফাস্ট ওয়েবসাইট প্ল্যাটফর্ম**: নেক্সট.জেএস ও রিয়্যাক্ট প্রযুক্তিতে নির্মিত বিদ্যুৎগতির আধুনিক ওয়েবসাইট।\n৩️⃣ **কুরিয়ার ও ই-কমার্স ইন্টিগ্রেশন**: পাঠাও, স্টেডফাস্ট ও রেডএক্স এপিআই সিঙ্ক এবং শপিফাই/উকমার্সের সাথে অটো অর্ডার পাঠানো।\n৪️⃣ **বিকাশ ও নগদ পেমেন্ট গেটওয়ে**: পেমেন্ট ভেরিফিকেশন ও ডিজিটাল ইনভয়েস জেনারেশন।`,
         cardType: 'services',
         quickReplies: [
           lang === 'en' ? '💰 How much does it cost?' : '💰 প্যাকেজের খরচ কত?',
@@ -422,7 +518,40 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
       };
     }
 
-    // 11. HUMAN ESCALATION / TALK TO PERSON
+    // 11. SIDE PROJECTS & PULSE MONITOR (monitor.hightechenterprise.xyz)
+    if (q.includes('side project') || q.includes('sideproject') || q.includes('monitor') || q.includes('uptime') || q.includes('threat') || q.includes('cyber') || q.includes('status') || q.includes('telemetry') || q.includes('মনিটর') || q.includes('সাইড প্রজেক্ট') || q.includes('স্ট্যাটাস') || q.includes('আপটাইম')) {
+      return {
+        sender: 'bot',
+        text: lang === 'en'
+          ? `📡 **Enterprise Pulse Monitor**:\n\n**Enterprise Pulse Monitor** is our proprietary **Real-time global cyber-threat & tech-intelligence dashboard for high-tech enterprise clients**!\n\n• **Global Threat Telemetry**: Ingests active cyber-threat vectors and zero-day vulnerabilities in real time.\n• **Infrastructure Pulse**: Continuous 60s multi-region health checks and API heartbeat validation (99.98% SLA).\n• **WhatsApp & Webhook Latency**: Live latency tracking for client Meta WhatsApp nodes & Next.js clusters.\n• **Public Transparency**: Access live telemetry, incident logs, and security posture anytime.\n\n🔗 **Live Dashboard**: https://monitor.hightechenterprise.xyz/`
+          : `📡 **এন্টারপ্রাইজ পালস মনিটর**:\n\n**এন্টারপ্রাইজ পালস মনিটর** হলো হাই-টেক এন্টারপ্রাইজ ক্লায়েন্টদের জন্য আমাদের রিয়েল-টাইম গ্লোবাল সাইবার-থ্রেট ও টেক-ইন্টেলিজেন্স ড্যাশবোর্ড!\n\n• **গ্লোবাল থ্রেট টেলিমেট্রি**: রিয়েল-টাইম সাইবার থ্রেট ও ভালনারেবিলিটি ট্র্যাকিং।\n• **লাইভ আপটাইম**: প্রতি ৬০ সেকেন্ডে মাল্টি-রিজিয়ন হার্টবিট চেক (৯৯.৯৮% এসএলএ)।\n• **মেটা ওয়েবহুক টেলিমেট্রি**: হোয়াটসঅ্যাপ এপিআই ও ক্লাস্টার পারফরম্যান্স মনিটরিং।\n• **স্বচ্ছ পাবলিক ড্যাশবোর্ড**: সরাসরি লাইভ স্ট্যাটাস ও হিস্ট্রি দেখার সুযোগ।\n\n🔗 **লাইভ লিঙ্ক**: https://monitor.hightechenterprise.xyz/`,
+        cardType: 'tech',
+        quickReplies: [
+          lang === 'en' ? '🌐 Open monitor.hightechenterprise.xyz' : '🌐 মনিটর ড্যাশবোর্ড দেখুন',
+          lang === 'en' ? '🛠️ Our Services' : '🛠️ আমাদের সার্ভিসসমূহ',
+          lang === 'en' ? '🎁 Claim Free Demo' : '🎁 ফ্রি ডেমো রিকোয়েস্ট',
+          lang === 'en' ? '👤 Chat on WhatsApp' : '👤 হোয়াটসঅ্যাপে কথা বলুন'
+        ]
+      };
+    }
+
+    // 12. PORTFOLIO & CLIENT WEBSITES DEMO
+    if (q.includes('portfolio') || q.includes('client site') || q.includes('work') || q.includes('previous') || q.includes('project') || q.includes('grocery') || q.includes('druto bazar') || q.includes('druto') || q.includes('youtube') || q.includes('aumecho') || q.includes('sanctuary') || q.includes('channel') || q.includes('ইউটিউব') || q.includes('বাজার') || q.includes('মুদি') || q.includes('গ্রোসারি') || q.includes('পর্টফোলিও') || q.includes('আগের কাজ') || q.includes('ক্লায়েন্ট') || q.includes('ওয়েবসাইট') || q.includes('urban beast') || q.includes('optimum') || q.includes('secret style') || q.includes('one outfit') || q.includes('awesome point') || q.includes('pureflow') || q.includes('wpl')) {
+      return {
+        sender: 'bot',
+        text: lang === 'en'
+          ? `🌐 **Real Client Websites & Live Portfolio**:\n\nExplore our recently engineered client web portals, YouTube channel platforms, and eCommerce storefronts:\n\n1. **WPL PureFlow USA**: https://usa-pureflow.pages.dev/ (Liquid Futurism & Water Tech)\n2. **AumEcho Sanctuary**: https://aumecho-sanctuary.pages.dev/ (YouTube Channel Website & Vedic Audio Hub)\n3. **Optimum Power Engineering**: https://optimumpowerengineering.com/ (Heavy Industrial Engineering)\n4. **Druto Bazar BD**: https://kuddus-vai.github.io/Druto-Bazar-BD/ (Online Grocery & Daily Essentials)\n5. **Urban Beast BD**: https://kuddus-vai.github.io/Urban-Beast-BD-/ (Streetwear & Apparel)\n6. **One Outfit**: https://kuddus-vai.github.io/One-Outfit/ (Modern Fashion Store)\n7. **Secret Style BD**: https://kuddus-vai.github.io/Secret-Style-BD/ (Exclusive Boutique)\n8. **Awesome Point**: https://kuddus-vai.github.io/Awesome-Point/ (Multi-Product Retail)\n9. **Pulse Monitor**: https://monitor.hightechenterprise.xyz/ (Official Telemetry Lab)\n\nAll platforms feature sub-second loading, responsive mobile designs, and seamless WhatsApp ordering!`
+          : `🌐 **আমাদের বাস্তব ক্লায়েন্ট ওয়েবসাইট ও লাইভ পোর্টফোলিও**:\n\nআমাদের তৈরি করা সাম্প্রতিক কিছু সফল ক্লায়েন্ট ওয়েবসাইট, ইউটিউব চ্যানেল প্ল্যাটফর্ম ও লাইভ ডেমো দেখুন:\n\n১. **WPL পিওরফ্লো ইউএসএ**: https://usa-pureflow.pages.dev/ (লিকুইড ফিউচারিজম ও ওয়াটার টেক)\n২. **আউমইকো স্যাঙ্কচুয়ারি**: https://aumecho-sanctuary.pages.dev/ (ইউটিউব চ্যানেল ওয়েবসাইট ও মেডিটেশন অডিও হাব)\n৩. **অপটিমাম পাওয়ার ইঞ্জিনিয়ারিং**: https://optimumpowerengineering.com/ (ইন্ডাস্ট্রিয়াল সাবস্টেশন ইঞ্জিনিয়ারিং)\n৪. **দ্রুত বাজার বিডি**: https://kuddus-vai.github.io/Druto-Bazar-BD/ (অনলাইন গ্রোসারি ও সুপারস্টোর)\n৫. **আরবান বিস্ট বিডি**: https://kuddus-vai.github.io/Urban-Beast-BD-/ (স্ট্রিটওয়্যার ও ফ্যাশন ই-কমার্স)\n৬. **ওয়ান আউটফিট**: https://kuddus-vai.github.io/One-Outfit/ (মডার্ন ফ্যাশন বুটিক)\n৭. **সিক্রেট স্টাইল বিডি**: https://kuddus-vai.github.io/Secret-Style-BD/ (এক্সক্লুসিভ লাক্সারি স্টোর)\n৮. **অসাম পয়েন্ট**: https://kuddus-vai.github.io/Awesome-Point/ (মাল্টি-ক্যাটাগরি রিটেইল)\n৯. **পালস মনিটর**: https://monitor.hightechenterprise.xyz/ (২৪/৭ আপটাইম মনিটর)\n\nপ্রত্যেকটি সাইট বিদ্যুৎগতিতে লোড হয় এবং সরাসরি ইন্টার‍্যাক্টিভ সিমুলেটরে টেস্ট করা যায়!`,
+        cardType: 'tech',
+        quickReplies: [
+          lang === 'en' ? '🎁 Request Free Prototype' : '🎁 ফ্রি ডেমো রিকোয়েস্ট',
+          lang === 'en' ? '💰 View Pricing Plans' : '💰 প্যাকেজের খরচ দেখুন',
+          lang === 'en' ? '👤 Chat on WhatsApp' : '👤 হোয়াটসঅ্যাপে কথা বলুন'
+        ]
+      };
+    }
+
+    // 13. HUMAN ESCALATION / TALK TO PERSON
     if (q.includes('human') || q.includes('talk') || q.includes('call') || q.includes('person') || q.includes('agent') || q.includes('মানুষ') || q.includes('কথা') || q.includes('কল')) {
       return {
         sender: 'bot',
@@ -469,6 +598,12 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
     // If user clicked call
     if (query.includes('Call +880') || query.includes('কল করুন')) {
       window.location.href = `tel:${COMPANY_INFO.phone}`;
+      return;
+    }
+
+    // If user clicked monitor dashboard link
+    if (query.includes('monitor.hightechenterprise.xyz') || query.includes('মনিটর ড্যাশবোর্ড')) {
+      window.open('https://monitor.hightechenterprise.xyz/', '_blank', 'noopener,noreferrer');
       return;
     }
 
@@ -542,13 +677,26 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
     }
   };
 
-  const handlePrototypeSubmit = (e: React.FormEvent) => {
+  const handlePrototypeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!protoBizName.trim() || !protoPhone.trim()) return;
 
     setProtoSubmitted(true);
     const summaryText = `Hello High-Tech Enterprise! I am requesting a Free 48-Hour Prototype Demo for my business:\n\n• Business Name: ${protoBizName}\n• Industry: ${protoIndustry}\n• Desired Solution: ${protoService}\n• Contact Number: ${protoPhone}\n\nPlease confirm my prototype preview schedule.`;
     const targetUrl = `https://wa.me/8801996921149?text=${encodeURIComponent(summaryText)}`;
+
+    try {
+      await submitQuoteToGmail({
+        name: protoBizName,
+        phone: protoPhone,
+        company: protoBizName,
+        serviceInterest: `${protoIndustry} - ${protoService}`,
+        formTitle: 'Concierge Bot - Free 48h Prototype & Quote Request',
+        source: 'FloatingWhatsApp Bot'
+      });
+    } catch (err) {
+      console.warn('Bot prototype dispatch note:', err);
+    }
 
     // Add confirmation to chat flow
     setTimeout(() => {
@@ -560,8 +708,8 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
         id: `bot-proto-${Date.now()}`,
         sender: 'bot',
         text: language === 'en'
-          ? `🎉 **Prototype Request Registered!**\n\n• Business: **${protoBizName}**\n• Industry: **${protoIndustry}**\n• Solution: **${protoService}**\n• Phone: **${protoPhone}**\n\nOur engineering team in Savar, Dhaka will review your business and assemble your functioning interactive preview within 48 hours. Tap below to send this directly to WhatsApp:`
-          : `🎉 **ফ্রি প্রোটোটাইপ রিকোয়েস্ট গৃহীত হয়েছে!**\n\n• প্রতিষ্ঠান: **${protoBizName}**\n• ইন্ডাস্ট্রি: **${protoIndustry}**\n• সল্যুশন: **${protoService}**\n• ফোন নম্বর: **${protoPhone}**\n\nসাভার অফিসের টেকনিক্যাল টিম ৪৮ ঘণ্টার মধ্যে আপনার ডেমো প্রস্তুত করবে। সরাসরি হোয়াটসঅ্যাপে পাঠাতে নিচের বাটনে ট্যাপ করুন:`,
+          ? `🎉 **Prototype & Quote Request Registered!**\n\n• Business: **${protoBizName}**\n• Industry: **${protoIndustry}**\n• Solution: **${protoService}**\n• Phone: **${protoPhone}**\n\n✅ *Dispatched directly to official Gmail (${PRIMARY_GMAIL}) and Savar engineering team.*\n\nOur team will assemble your functioning interactive preview within 48 hours. Tap below to send this directly to WhatsApp:`
+          : `🎉 **ফ্রি প্রোটোটাইপ ও কোটেশন রিকোয়েস্ট গৃহীত হয়েছে!**\n\n• প্রতিষ্ঠান: **${protoBizName}**\n• ইন্ডাস্ট্রি: **${protoIndustry}**\n• সল্যুশন: **${protoService}**\n• ফোন নম্বর: **${protoPhone}**\n\n✅ *সরাসরি আমাদের অফিসিয়াল জি-মেইল (${PRIMARY_GMAIL}) এবং সাভার ইঞ্জিনিয়ারিং টিমের নিকট পৌঁছেছে।*\n\n৪৮ ঘণ্টার মধ্যে আপনার ডেমো প্রস্তুত করা হবে। সরাসরি হোয়াটসঅ্যাপে পাঠাতে নিচের বাটনে ট্যাপ করুন:`,
         timestamp: 'Just now',
         cardType: 'prototype',
         quickReplies: [
@@ -601,11 +749,13 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
           </div>
           <div className="text-xs">
             <p className="font-semibold text-cyan-300 flex items-center gap-1.5">
-              <span>High-Tech Concierge</span>
+              <span>{language === 'bn' ? 'হাই-টেক কনসিয়্যার্জ' : 'High-Tech Concierge'}</span>
               <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             </p>
             <p className="text-slate-300 text-[11px] leading-tight mt-0.5">
-              Have questions about pricing, websites, or WhatsApp bots? Ask our instant bot!
+              {language === 'bn'
+                ? 'ওয়েবসাইট তৈরি, মেটা হোয়াটসঅ্যাপ বট বা প্যাকেজের দাম জানতে যেকোনো প্রশ্ন করুন!'
+                : 'Have questions about pricing, websites, or WhatsApp bots? Ask our instant bot!'}
             </p>
           </div>
           <button 
@@ -642,14 +792,14 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                   <div className="flex items-center gap-1.5">
                     <h3 className="text-sm font-bold text-white tracking-wide">High-Tech Enterprise</h3>
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                      Zero-AI Engine
+                      {language === 'bn' ? 'স্মার্ট রুল ইঞ্জিন' : 'Zero-AI Engine'}
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-400 flex items-center gap-1">
                     <MapPin className="w-3 h-3 text-cyan-400" />
-                    <span>Savar, Dhaka</span>
+                    <span>{language === 'bn' ? 'সাভার, ঢাকা' : 'Savar, Dhaka'}</span>
                     <span className="text-slate-600">•</span>
-                    <span className="text-emerald-400 font-medium">⚡ Instant Guide</span>
+                    <span className="text-emerald-400 font-medium">{language === 'bn' ? '⚡ তাৎক্ষণিক গাইড' : '⚡ Instant Guide'}</span>
                   </p>
                 </div>
               </div>
@@ -667,14 +817,30 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                   <span>{language === 'en' ? 'বাং' : 'EN'}</span>
                 </button>
 
-                {/* Sound toggle */}
+                {/* User-friendly sound toggle (persisted, live-preview chime on unmute, zero session restart) */}
                 <button
                   id="bot-sound-toggle-btn"
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-colors"
-                  title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+                  onClick={handleToggleSound}
+                  aria-label={isMuted ? (language === 'en' ? 'Unmute chime audio' : 'সাউন্ড অন করুন') : (language === 'en' ? 'Mute chime audio' : 'সাউন্ড মিউট করুন')}
+                  aria-pressed={!isMuted}
+                  className={`relative p-1.5 rounded-lg border transition-all duration-200 flex items-center justify-center ${
+                    isMuted
+                      ? 'bg-rose-500/10 hover:bg-rose-500/20 border-rose-500/30 text-rose-300 hover:text-rose-200'
+                      : 'bg-cyan-500/15 hover:bg-cyan-500/25 border-cyan-500/40 text-cyan-300 hover:text-white shadow-[0_0_12px_rgba(6,182,212,0.25)]'
+                  }`}
+                  title={isMuted 
+                    ? (language === 'en' ? 'Sound is Muted (Click to Unmute)' : 'সাউন্ড মিউট করা আছে (চালু করতে ক্লিক করুন)') 
+                    : (language === 'en' ? 'Sound is Active (Click to Mute)' : 'সাউন্ড চালু আছে (মিউট করতে ক্লিক করুন)')
+                  }
                 >
-                  {isMuted ? <VolumeX className="w-3.5 h-3.5 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 text-cyan-400" />}
+                  {isMuted ? (
+                    <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+                  ) : (
+                    <div className="relative flex items-center justify-center">
+                      <Volume2 className="w-3.5 h-3.5 text-cyan-300" />
+                      <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping opacity-75 pointer-events-none"></span>
+                    </div>
+                  )}
                 </button>
 
                 {/* Reset Chat */}
@@ -684,7 +850,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                     setMessages([getInitialMessage(language)]);
                     setActiveTab('chat');
                   }}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-colors"
+                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-colors"
                   title="Restart Conversation"
                 >
                   <RotateCcw className="w-3.5 h-3.5 text-slate-300" />
@@ -694,13 +860,28 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                 <button
                   id="bot-close-window-btn"
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-colors ml-0.5"
+                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-colors ml-0.5"
                   title="Close Assistant"
                 >
                   <X className="w-4 h-4 text-slate-300" />
                 </button>
               </div>
             </div>
+
+            {/* Transient Sound Toggle Feedback Banner */}
+            {soundFeedbackText && (
+              <div 
+                id="bot-sound-feedback-badge"
+                className="flex items-center justify-between px-3 py-1.5 bg-slate-900/95 border border-cyan-500/30 rounded-xl text-[11px] text-cyan-200 shadow-sm transition-all"
+              >
+                <span className="flex items-center gap-1.5 font-medium">
+                  {soundFeedbackText}
+                </span>
+                <span className="text-[10px] text-slate-400 bg-white/5 px-2 py-0.5 rounded-md border border-white/5">
+                  {language === 'en' ? 'Session uninterrupted' : 'সেশন বহাল আছে'}
+                </span>
+              </div>
+            )}
 
             {/* Navigation Tabs for Website Visitors */}
             <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-slate-950/80 border border-white/10 text-[11px] font-medium">
@@ -796,24 +977,24 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                       {/* Bot Card Enhancements */}
                       {m.cardType === 'pricing' && (
                         <div className="mt-2.5 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px]">
-                          <span className="text-cyan-300 font-semibold">Tiers: ৳12k / ৳24k / ৳45k</span>
+                          <span className="text-cyan-300 font-semibold">{language === 'bn' ? 'প্যাকেজ: ১২,০০০৳ / ২৪,০০০৳ / ৪৫,০০০৳' : 'Tiers: ৳12k / ৳24k / ৳45k'}</span>
                           <button
                             onClick={() => setActiveTab('prototype')}
-                            className="px-2 py-1 rounded-md bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold transition-colors"
+                            className="px-2 py-1 rounded-md bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold transition-colors cursor-pointer"
                           >
-                            Test Demo →
+                            {language === 'bn' ? 'ফ্রি ডেমো দেখুন →' : 'Test Demo →'}
                           </button>
                         </div>
                       )}
 
                       {m.cardType === 'prototype' && (
                         <div className="mt-2.5 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px]">
-                          <span className="text-emerald-300 font-semibold">48h Delivery • 0 Upfront Deposit</span>
+                          <span className="text-emerald-300 font-semibold">{language === 'bn' ? '৪৮ ঘণ্টায় ডেলিভারি • অগ্রিম ফি শূন্য' : '48h Delivery • 0 Upfront Deposit'}</span>
                           <button
                             onClick={() => setActiveTab('prototype')}
-                            className="px-2 py-1 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold transition-colors"
+                            className="px-2 py-1 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold transition-colors cursor-pointer"
                           >
-                            Claim Now →
+                            {language === 'bn' ? 'এখনই ক্লেইম করুন →' : 'Claim Now →'}
                           </button>
                         </div>
                       )}
@@ -1018,7 +1199,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                 {/* Step 1: Industry */}
                 <div className="space-y-1.5">
                   <label className="text-[11px] font-semibold text-slate-300 flex items-center gap-1">
-                    <span>1. Your Industry / Business Type:</span>
+                    <span>{language === 'en' ? '1. Your Industry / Business Type:' : '১. আপনার ইন্ডাস্ট্রি বা ব্যবসার ধরন:'}</span>
                   </label>
                   <select
                     id="proto-industry-select"
@@ -1026,20 +1207,20 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                     onChange={(e) => setProtoIndustry(e.target.value)}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
                   >
-                    <option value="eCommerce / Retail">Fashion, Clothing & Retail (ই-কমার্স)</option>
-                    <option value="Electronics & Gadgets">Electronics & Gadgets (গ্যাজেট ও টেক)</option>
-                    <option value="Cosmetics & Skincare">Cosmetics & Skincare (কসমেটিকস)</option>
-                    <option value="Wholesale & Distribution">Wholesale & B2B Distribution (পাইকারি)</option>
-                    <option value="Real Estate & Properties">Real Estate & Construction (রিয়েল এস্টেট)</option>
-                    <option value="Agency & Professional Services">Agency & Consulting (সার্ভিস ও এজেন্সি)</option>
-                    <option value="Education & Coaching">Education & Institute (শিক্ষা প্রতিষ্ঠান)</option>
+                    <option value="eCommerce / Retail">{language === 'en' ? 'Fashion, Clothing & Retail' : 'ফ্যাশন, ক্লোদিং ও রিটেল (ই-কমার্স)'}</option>
+                    <option value="Electronics & Gadgets">{language === 'en' ? 'Electronics & Gadgets' : 'ইলেকট্রনিক্স ও গ্যাজেট'}</option>
+                    <option value="Cosmetics & Skincare">{language === 'en' ? 'Cosmetics & Skincare' : 'কসমেটিকস ও স্কিনকেয়ার'}</option>
+                    <option value="Wholesale & Distribution">{language === 'en' ? 'Wholesale & B2B Distribution' : 'পাইকারি ও বি২বি ডিস্ট্রিবিউশন'}</option>
+                    <option value="Real Estate & Properties">{language === 'en' ? 'Real Estate & Construction' : 'রিয়েল এস্টেট ও কনস্ট্রাকশন'}</option>
+                    <option value="Agency & Professional Services">{language === 'en' ? 'Agency & Consulting' : 'এজেন্সি ও কনসাল্টিং'}</option>
+                    <option value="Education & Coaching">{language === 'en' ? 'Education & Institute' : 'শিক্ষা ও কোচিং প্রতিষ্ঠান'}</option>
                   </select>
                 </div>
 
                 {/* Step 2: Desired Service */}
                 <div className="space-y-1.5">
                   <label className="text-[11px] font-semibold text-slate-300 flex items-center gap-1">
-                    <span>2. Desired Solution:</span>
+                    <span>{language === 'en' ? '2. Desired Solution:' : '২. প্রয়োজনীয় সল্যুশন:'}</span>
                   </label>
                   <select
                     id="proto-service-select"
@@ -1047,17 +1228,17 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                     onChange={(e) => setProtoService(e.target.value)}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
                   >
-                    <option value="WhatsApp Sales Bot & Auto-Reply">WhatsApp 24/7 Sales Bot (অফিসিয়াল ক্লাউড এপিআই)</option>
-                    <option value="High-Speed Modern Website">High-Speed Next.js Modern Website (আল্ট্রা-ফাস্ট ওয়েবসাইট)</option>
-                    <option value="Full Omnichannel + Courier Sync">Full Omnichannel (Website + WhatsApp + Courier Sync)</option>
-                    <option value="Custom CRM & bKash Automation">Custom CRM & bKash Automation (সিআরএম ও পেমেন্ট অটোমেশন)</option>
+                    <option value="WhatsApp Sales Bot & Auto-Reply">{language === 'en' ? 'WhatsApp 24/7 Sales Bot (Official Cloud API)' : 'হোয়াটসঅ্যাপ ২৪/৭ সেলস বট (অফিসিয়াল ক্লাউড এপিআই)'}</option>
+                    <option value="High-Speed Modern Website">{language === 'en' ? 'High-Speed Next.js Modern Website' : 'হাই-স্পিড নেক্সট.জেএস আধুনিক ওয়েবসাইট'}</option>
+                    <option value="Full Omnichannel + Courier Sync">{language === 'en' ? 'Full Omnichannel (Website + WhatsApp + Courier Sync)' : 'ফুল অমনিচ্যানেল (ওয়েবসাইট + হোয়াটসঅ্যাপ + কুরিয়ার সিঙ্ক)'}</option>
+                    <option value="Custom CRM & bKash Automation">{language === 'en' ? 'Custom CRM & bKash Automation' : 'কাস্টম সিআরএম ও বিকাশ অটোমেশন'}</option>
                   </select>
                 </div>
 
                 {/* Step 3: Contact Details */}
                 <div className="space-y-2">
                   <label className="text-[11px] font-semibold text-slate-300">
-                    3. Your Business & Contact Info:
+                    {language === 'en' ? '3. Your Business & Contact Info:' : '৩. আপনার ব্যবসা ও যোগাযোগের তথ্য:'}
                   </label>
                   <input
                     id="proto-bizname-input"
@@ -1065,7 +1246,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                     required
                     value={protoBizName}
                     onChange={(e) => setProtoBizName(e.target.value)}
-                    placeholder="Business Name or Facebook Page (e.g. Apex Attire)"
+                    placeholder={language === 'en' ? 'Business Name or Facebook Page (e.g. Urban Attire)' : 'ব্যবসার নাম বা ফেসবুক পেইজ (যেমন: আরবান অ্যাটায়ার)'}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400"
                   />
                   <input
@@ -1074,7 +1255,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                     required
                     value={protoPhone}
                     onChange={(e) => setProtoPhone(e.target.value)}
-                    placeholder="WhatsApp Phone Number (e.g. 01712-345678)"
+                    placeholder={language === 'en' ? 'WhatsApp Phone Number (e.g. 01712-345678)' : 'হোয়াটসঅ্যাপ ফোন নম্বর (যেমন: 01712-345678)'}
                     className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400"
                   />
                 </div>
@@ -1082,7 +1263,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                 <button
                   id="proto-submit-btn"
                   type="submit"
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:opacity-90 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.99]"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:opacity-90 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.99] cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>{language === 'en' ? 'Submit for Free 48h Prototype' : 'ফ্রি ৪৮ ঘণ্টার ডেমো রিকোয়েস্ট করুন'}</span>
@@ -1091,7 +1272,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
 
               <div className="p-3 rounded-xl bg-slate-900/60 border border-white/5 text-[10px] text-slate-400 flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Zero deposit required. We present your interactive prototype in 48 hours for review.</span>
+                <span>{language === 'en' ? 'Zero deposit required. We present your interactive prototype in 48 hours for review.' : 'কোনো অগ্রিম ফি লাগবে না। আমরা ৪৮ ঘণ্টার মধ্যে লাইভ প্রোটোটাইপ প্রস্তুত করে দেখাব।'}</span>
               </div>
             </div>
           )}
@@ -1107,8 +1288,8 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                       <Building2 className="w-4 h-4 text-cyan-400" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-white">Savar Engineering HQ</h4>
-                      <p className="text-[10px] text-emerald-400 font-mono">● Operational & Open</p>
+                      <h4 className="text-xs font-bold text-white">{language === 'en' ? 'Savar Engineering HQ' : 'সাভার ইঞ্জিনিয়ারিং হেডকোয়ার্টার'}</h4>
+                      <p className="text-[10px] text-emerald-400 font-mono">● {language === 'en' ? 'Operational & Open' : 'খোলা ও সার্বক্ষণিক সক্রিয়'}</p>
                     </div>
                   </div>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
@@ -1119,15 +1300,15 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                 <div className="space-y-2 text-xs text-slate-300 pt-1 border-t border-white/5">
                   <div className="flex items-start gap-2">
                     <MapPin className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Savar, Dhaka 1217, Bangladesh</span>
+                    <span>{language === 'en' ? 'Savar, Dhaka 1217, Bangladesh' : 'সাভার, ঢাকা ১২১৭, বাংলাদেশ'}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
-                    <span>9:00 AM – 10:00 PM BST (Every Day)</span>
+                    <span>{language === 'en' ? '9:00 AM – 10:00 PM BST (Every Day)' : 'সকাল ৯:০০ – রাত ১০:০০ (প্রতিদিন)'}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <User className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
-                    <span>Founder & Architect: <strong>Md. Asaduzzaman</strong></span>
+                    <span>{language === 'en' ? <>Founder & Architect: <strong>Md. Asaduzzaman</strong></> : <>প্রতিষ্ঠাতা ও লিড আর্কিটেক্ট: <strong>মোঃ আসাদুজ্জামান</strong></>}</span>
                   </div>
                 </div>
               </div>
@@ -1147,8 +1328,8 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                       <MessageCircle className="w-4 h-4" />
                     </div>
                     <div className="text-left">
-                      <p className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">Chat on WhatsApp</p>
-                      <p className="text-[10px] text-slate-400">+880 1996-921149 • Response in &lt; 5 mins</p>
+                      <p className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">{language === 'en' ? 'Chat on WhatsApp' : 'হোয়াটসঅ্যাপে চ্যাট করুন'}</p>
+                      <p className="text-[10px] text-slate-400">+880 1996-921149 • {language === 'en' ? 'Response in < 5 mins' : 'গড় রেসপন্স < ৩ মিনিট'}</p>
                     </div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-1 transition-transform" />
@@ -1165,8 +1346,8 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                       <Phone className="w-4 h-4" />
                     </div>
                     <div className="text-left">
-                      <p className="text-xs font-bold text-white">Call Technical Hotline</p>
-                      <p className="text-[10px] text-slate-400">01996-921149 (Direct Line)</p>
+                      <p className="text-xs font-bold text-white">{language === 'en' ? 'Call Technical Hotline' : 'সরাসরি হটলাইনে কল দিন'}</p>
+                      <p className="text-[10px] text-slate-400">01996-921149 ({language === 'en' ? 'Direct Line' : 'সরাসরি লাইন'})</p>
                     </div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
@@ -1183,7 +1364,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
                       <ExternalLink className="w-4 h-4" />
                     </div>
                     <div className="text-left">
-                      <p className="text-xs font-bold text-white">Official Email</p>
+                      <p className="text-xs font-bold text-white">{language === 'en' ? 'Official Email' : 'অফিসিয়াল ইমেইল'}</p>
                       <p className="text-[10px] text-slate-400">{COMPANY_INFO.email}</p>
                     </div>
                   </div>
@@ -1193,7 +1374,11 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
 
               {/* Consultation Invite Note */}
               <div className="p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/20 text-[11px] text-slate-300 leading-relaxed">
-                ☕ <strong>Visiting Savar?</strong> You are welcome to visit our engineering office for tea and an in-person discovery session. For remote teams, we conduct structured 30-minute Google Meet consultations.
+                {language === 'en' ? (
+                  <>☕ <strong>Visiting Savar?</strong> You are welcome to visit our engineering office for tea and an in-person discovery session. For remote teams, we conduct structured 30-minute Google Meet consultations.</>
+                ) : (
+                  <>☕ <strong>সাভার অফিসে চায়ের আমন্ত্রণ!</strong> আমাদের অফিসে সরাসরি এসে আপনার ব্যবসার প্রজেক্ট ও অটোমেশন নিয়ে আলোচনা করতে পারেন। দূরবর্তী টিমের জন্য আমরা গুগল মিটে ৩০ মিনিটের ফ্রি সেশন পরিচালনা করি।</>
+                )}
               </div>
             </div>
           )}
@@ -1202,7 +1387,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenDemoMo
           <div className="px-4 py-2 bg-slate-950 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400">
             <span className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              <span>Online • Savar, Dhaka HQ</span>
+              <span>{language === 'en' ? 'Online • Savar, Dhaka HQ' : 'অনলাইন • সাভার, ঢাকা হেডকোয়ার্টার'}</span>
             </span>
             <span className="font-mono text-cyan-400/80">hightechenterprise.xyz</span>
           </div>
