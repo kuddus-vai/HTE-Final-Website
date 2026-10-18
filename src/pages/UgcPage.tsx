@@ -123,6 +123,31 @@ export const UgcPage: React.FC<UgcPageProps> = ({ onNavigate }) => {
         </div>
       </section>
 
+      {/* Samples */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-center">Watch real AI creators</h2>
+        <p className="text-slate-400 text-center mt-3 max-w-xl mx-auto">
+          Every video below was made by our AI UGC engine — no shoot, no actors, no studio.
+        </p>
+        <div className="mt-10 grid sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/40">
+              <video
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full aspect-[9/16] object-cover bg-black"
+                src={`/samples/ugc-creator-${i}.mp4`}
+              />
+              <div className="p-4 flex items-center justify-between">
+                <span className="text-sm font-semibold text-slate-200">AI Creator {i}</span>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-[#FF6B00]/15 text-[#FF6B00] font-semibold">100% AI</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Craft */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-center">Why it performs</h2>
