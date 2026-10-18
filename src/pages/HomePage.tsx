@@ -48,12 +48,12 @@ export const HomePage: React.FC<HomePageProps> = ({
   const { language } = useLanguage();
   const t = TRANSLATIONS[language];
 
-  // Reference the flagship client productions (including AumEcho YouTube Channel and eCommerce)
-  const wplDemo = LIVE_DEMOS_DATA.find(d => d.id === 'demo-wpl-pureflow') || LIVE_DEMOS_DATA[0];
+  // Reference the flagship client productions (eCommerce, Corporate & Creator Channels)
+  const urbanBeastDemo = LIVE_DEMOS_DATA.find(d => d.id === 'demo-urban-beast-bd') || LIVE_DEMOS_DATA[4] || LIVE_DEMOS_DATA[0];
   const optimumDemo = LIVE_DEMOS_DATA.find(d => d.id === 'demo-optimum-power') || LIVE_DEMOS_DATA[1];
   const aumechoDemo = LIVE_DEMOS_DATA.find(d => d.id === 'demo-aumecho-sanctuary') || LIVE_DEMOS_DATA[3] || LIVE_DEMOS_DATA[0];
   const drutoBazarDemo = LIVE_DEMOS_DATA.find(d => d.id === 'demo-druto-bazar-bd') || LIVE_DEMOS_DATA[2] || LIVE_DEMOS_DATA[0];
-  const urbanBeastDemo = LIVE_DEMOS_DATA.find(d => d.id === 'demo-urban-beast-bd') || LIVE_DEMOS_DATA[4] || LIVE_DEMOS_DATA[0];
+  const oneOutfitDemo = LIVE_DEMOS_DATA.find(d => d.id === 'demo-one-outfit') || LIVE_DEMOS_DATA[5] || LIVE_DEMOS_DATA[0];
 
   const carouselRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -62,20 +62,20 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   const featuredProjects = [
     {
-      item: wplDemo,
-      badgeText: language === 'bn' ? 'ইউএস ফ্ল্যাগশিপ প্রজেক্ট' : 'Featured US Flagship',
-      badgeIcon: Star,
-      badgeStyle: 'text-cyan-300 bg-cyan-950/40 border-cyan-500/30',
-      accentBorder: 'hover:border-cyan-500/40',
-      title: 'WPL PureFlow USA',
-      industry: language === 'bn' ? 'ইউএস রিভার্স অসমোসিস ওয়াটার পিউরিফায়ার' : 'Liquid Futurism & Precision Water Purification',
-      description: language === 'bn' 
-        ? 'আমেরিকার বিলাসবহুল বাড়ি, মেডিকেল সেন্টার ও হসপিটালিটি ব্র্যান্ডের জন্য বিশেষায়িত রিভার্স অসমোসিস ওয়াটার পিউরিফায়ার প্ল্যাটফর্ম।'
-        : 'Awwwards-grade digital experience for advanced reverse osmosis & deionization water purification in elite US estates, medical centers, and boutique hospitality properties.',
+      item: urbanBeastDemo,
+      badgeText: language === 'bn' ? '★ লাইভ ই-কমার্স ফ্ল্যাগশিপ' : '★ Featured Live eCommerce',
+      badgeIcon: ShoppingBag,
+      badgeStyle: 'text-amber-300 bg-amber-950/40 border-amber-500/30',
+      accentBorder: 'hover:border-amber-500/40',
+      title: 'Urban Beast BD',
+      industry: language === 'bn' ? 'স্ট্রিটওয়্যার ফ্যাশন ও আধুনিক ড্রপ কমার্স' : 'ShopFlow™ Streetwear Apparel & Drop Commerce',
+      description: language === 'bn'
+        ? 'তরুণ প্রজন্মের জন্য আধুনিক স্ট্রিটওয়্যার ফ্যাশন প্ল্যাটফর্ম — ০.৬৮ সেকেন্ডের লোড স্পিড, মোবাইল-ফার্স্ট ক্যাটালগ এবং বিকাশ-পাঠাও সরাসরি সিঙ্ক সুবিধা।'
+        : 'Modern direct-to-consumer apparel commerce platform with high-converting lookbooks, instant bKash checkout, and automated Steadfast/Pathao courier delivery.',
       metric1Label: t.carousel.speedBenchmark,
-      metric1Value: language === 'bn' ? '০.৫২ সেকেন্ড' : '0.52s FCP',
-      metric2Label: language === 'bn' ? 'ক্লায়েন্ট ভলিউম' : 'Heritage & Scale',
-      metric2Value: language === 'bn' ? '১১,০০০+ ইউএস পরিবার' : '11,000+ US Homes',
+      metric1Value: language === 'bn' ? '০.৬৮ সেকেন্ড' : '0.68s FCP',
+      metric2Label: t.carousel.conversionGain,
+      metric2Value: language === 'bn' ? '+৩৪% কনভার্সন বৃদ্ধি' : '+34% Conversions',
     },
     {
       item: optimumDemo,
@@ -122,24 +122,24 @@ export const HomePage: React.FC<HomePageProps> = ({
         : 'Full-stack headless grocery platform with 30-minute instant dispatch dispatch, WhatsApp 1-tap cart checkout, and dynamic courier webhook sync.',
       metric1Label: language === 'bn' ? 'অর্ডার প্রসেসিং' : 'Order Processing',
       metric1Value: language === 'bn' ? '৩০ মিনিট দ্রুত ডেলিভারি' : '30-Min Fast Dispatch',
-      metric2Label: language === 'bn' ? 'কার্ট অটোমেশন' : 'Cart Automation',
+      metric2Label: language === 'bn' ? 'কার্ট অটোমーション' : 'Cart Automation',
       metric2Value: language === 'bn' ? '১-ট্যাপ হোয়াটসঅ্যাপ কার্ট' : '1-Tap WhatsApp Cart',
     },
     {
-      item: urbanBeastDemo,
-      badgeText: language === 'bn' ? '★ ফ্যাশন ও অ্যাপারেল স্টোর' : '★ Streetwear eCommerce',
+      item: oneOutfitDemo,
+      badgeText: language === 'bn' ? '★ ফ্যাশন বুটিক প্ল্যাটফর্ম' : '★ Fashion Boutique',
       badgeIcon: ShoppingBag,
-      badgeStyle: 'text-amber-300 bg-amber-950/40 border-amber-500/30',
-      accentBorder: 'hover:border-amber-500/40',
-      title: 'Urban Beast BD',
-      industry: language === 'bn' ? 'স্ট্রিটওয়্যার ফ্যাশন ও ড্রপ কমার্স' : 'ShopFlow™ Streetwear Apparel & Drop Commerce',
+      badgeStyle: 'text-purple-300 bg-purple-950/40 border-purple-500/30',
+      accentBorder: 'hover:border-purple-500/40',
+      title: 'One Outfit BD',
+      industry: language === 'bn' ? 'ফ্যাশন ও লাইফস্টাইল রিটেল বুটিক' : 'Fashion & Lifestyle Retail Boutique',
       description: language === 'bn'
-        ? '০.৬৮ সেকেন্ডের লোড স্পিড, মোবাইল-ফার্স্ট ক্যাটালগ এবং বিকাশ-পাঠাও সরাসরি সিঙ্ক সুবিধা।'
-        : 'Modern direct-to-consumer apparel commerce platform with high-converting lookbooks, instant bKash checkout, and automated parcel tracking.',
+        ? 'প্রিমিয়াম ফ্যাশন কালেকশন, মেটা হোয়াটসঅ্যাপ ক্যাটালগ ও ডিজিটাল অর্ডার ট্র্যাকিং।'
+        : 'Curated apparel lookbook platform engineered for rapid collection browsing and seamless Instagram/WhatsApp social conversions.',
       metric1Label: t.carousel.speedBenchmark,
-      metric1Value: language === 'bn' ? '০.৬৮ সেকেন্ড' : '0.68s FCP',
+      metric1Value: language === 'bn' ? '০.৫৯ সেকেন্ড' : '0.59s FCP',
       metric2Label: t.carousel.conversionGain,
-      metric2Value: language === 'bn' ? '+৩৪% কনভার্সন বৃদ্ধি' : '+34% Conversions',
+      metric2Value: language === 'bn' ? '+৪১% মোবাইল অর্ডার' : '+41% Mobile Orders',
     }
   ];
 
@@ -373,54 +373,28 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Carousel Pagination & Indicator Controls */}
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
-            {/* Quick helper text */}
-            <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-              <span className="w-2 h-2 rounded-full bg-[#FF7A00]"></span>
-              <span>{t.homeSections.featuredWork.helperText}</span>
+          <div className="mt-6 flex items-center justify-center gap-4 px-2">
+            <div className="flex items-center gap-2">
+              {featuredProjects.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleScrollToIndex(idx)}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    activeCardIndex === idx 
+                      ? 'w-7 bg-[#FF7A00] shadow-[0_0_8px_rgba(255,122,0,0.6)]' 
+                      : 'w-2 bg-white/20 hover:bg-white/40'
+                  }`}
+                />
+              ))}
             </div>
 
-            {/* Dots and Navigation */}
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                {featuredProjects.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleScrollToIndex(idx)}
-                    aria-label={`Go to slide ${idx + 1}`}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      activeCardIndex === idx 
-                        ? 'w-7 bg-[#FF7A00] shadow-[0_0_8px_rgba(255,122,0,0.6)]' 
-                        : 'w-2 bg-white/20 hover:bg-white/40'
-                    }`}
-                  />
-                ))}
-              </div>
-
-              <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-400 pl-2 border-l border-white/10">
-                <span className="text-white font-bold">{activeCardIndex + 1}</span>
-                <span>/</span>
-                <span>{featuredProjects.length}</span>
-              </div>
+            <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-400 pl-2 border-l border-white/10">
+              <span className="text-white font-bold">{activeCardIndex + 1}</span>
+              <span>/</span>
+              <span>{featuredProjects.length}</span>
             </div>
           </div>
-        </div>
-
-        {/* Minimalist Live Production Ticker Bar */}
-        <div className="mt-8 p-4 rounded-2xl bg-[#080C14] border border-white/10 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-white font-semibold">{t.homeSections.featuredWork.activeSitesLabel}</span>
-            <span className="text-zinc-400 hidden sm:inline">{t.homeSections.featuredWork.activeSitesList}</span>
-          </div>
-
-          <button
-            onClick={() => onNavigate('portfolio')}
-            className="text-xs font-mono text-[#FFA149] hover:text-white flex items-center gap-1 transition-colors"
-          >
-            <span>{t.homeSections.featuredWork.launchSimulatorText}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
         </div>
       </section>
 
