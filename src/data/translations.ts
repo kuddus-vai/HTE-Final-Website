@@ -182,12 +182,12 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       activeLanguage: 'বাংলা'
     },
     hero: {
-      trustBadge: '⚡ সাভার, ঢাকা • ২৪/৭ হোয়াটসঅ্যাপ বট ও বিদ্যুৎগতির আধুনিক ওয়েবসাইট',
-      headlineLine1: 'স্মার্ট অটোমেশন।',
-      headlineLine2: 'বিদ্যুৎগতির পারফরম্যান্স।',
-      subtitle: 'হাই-টেক এন্টারপ্রাইজ তৈরি করে ২৪/৭ স্বয়ংক্রিয় হোয়াটসঅ্যাপ সেলস বট, সুপার-ফাস্ট ওয়েবসাইট ও ক্লাউড সফটওয়্যার — যা আপনার কাস্টমার কেয়ার ও ডেলিভারি অটোমেট করে বিক্রি বাড়ায়।',
-      primaryCta: 'লাইভ ডেমো দেখুন',
-      secondaryCta: 'ফ্রি প্রোটোটাইপ শুরু করুন'
+      trustBadge: '⚡ ব্র্যান্ডের জন্য হাই-কনভার্টিং ওয়েবসাইট ও AI UGC ভিডিও বিজ্ঞাপন',
+      headlineLine1: 'বিক্রি বাড়ানো ওয়েবসাইট।',
+      headlineLine2: 'কনভার্ট করা ভিডিও।',
+      subtitle: 'হাই-টেক এন্টারপ্রাইজ DTC ব্র্যান্ডের জন্য তৈরি করে হাই-কনভার্টিং ওয়েবসাইট, ল্যান্ডিং পেজ ও AI UGC ভিডিও বিজ্ঞাপন — মাত্র $20/ভিডিও থেকে।',
+      primaryCta: 'আমাদের কাজ দেখুন',
+      secondaryCta: 'ফ্রি কোট নিন'
     },
     carousel: {
       badge: 'বাস্তব ক্লায়েন্ট প্রোডাকশন',
@@ -344,12 +344,12 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       activeLanguage: 'English'
     },
     hero: {
-      trustBadge: '⚡ Enterprise Autonomous AI & Modern Web Architecture',
-      headlineLine1: 'Autonomous Systems.',
-      headlineLine2: 'Unrivaled Speed.',
-      subtitle: 'High-Tech Enterprise designs award-winning web platforms, intelligent WhatsApp business automation, and real-time cloud POS software engineered for scale.',
-      primaryCta: 'Explore Live Demos',
-      secondaryCta: 'Free Architecture Consultation'
+      trustBadge: '⚡ High-Converting Websites & AI UGC Video Ads for Brands',
+      headlineLine1: 'Websites That Sell.',
+      headlineLine2: 'Videos That Convert.',
+      subtitle: 'High-Tech Enterprise builds high-converting websites, landing pages, and AI UGC video ad engines for DTC brands — from $20/video.',
+      primaryCta: 'See Our Work',
+      secondaryCta: 'Get a Free Quote'
     },
     carousel: {
       badge: 'Featured Client Productions',
