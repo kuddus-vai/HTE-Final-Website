@@ -15,8 +15,11 @@ import { PortfolioPage } from './pages/PortfolioPage';
 import { PricingPage } from './pages/PricingPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
+import { WebsitesPage } from './pages/WebsitesPage';
+import { UgcPage } from './pages/UgcPage';
+import { AutomationPage } from './pages/AutomationPage';
 
-const VALID_PAGES: PageId[] = ['home', 'services', 'products', 'demos', 'portfolio', 'pricing', 'about', 'contact'];
+const VALID_PAGES: PageId[] = ['home', 'services', 'products', 'demos', 'portfolio', 'pricing', 'about', 'contact', 'websites', 'ai-ugc', 'automation'];
 
 const PAGE_TITLES: Record<PageId, string> = {
   home: 'High-Tech Enterprise | Smart Solutions • Digital Growth • WhatsApp AI & Automation',
@@ -27,6 +30,9 @@ const PAGE_TITLES: Record<PageId, string> = {
   pricing: 'Transparent Pricing & TCO Cost Calculator | High-Tech Enterprise BD',
   about: 'About High-Tech Enterprise • Savar Headquarters & Core Team',
   contact: 'Contact & Instant System Blueprint | High-Tech Enterprise BD',
+  websites: 'High-Converting Websites & Landing Pages for DTC Brands | High-Tech Enterprise',
+  'ai-ugc': 'AI UGC Video Ads from $20 for DTC Brands | High-Tech Enterprise',
+  automation: 'n8n Workflow Automation & AI Agents | High-Tech Enterprise',
 };
 
 const PAGE_DESCRIPTIONS: Record<PageId, string> = {
@@ -38,6 +44,9 @@ const PAGE_DESCRIPTIONS: Record<PageId, string> = {
   pricing: 'Calculate your exact system deployment cost, Meta WhatsApp API fees, hosting and monthly subscriptions with our interactive TCO calculator.',
   about: 'Learn about High-Tech Enterprise BD Ltd., our engineering principles, Savar Dhaka headquarters, 99.98% SLA, and zero-trust security standards.',
   contact: 'Connect directly with our engineering team in Savar, Dhaka via WhatsApp (+880 1996-921149) or email (hightechenterprisebd@gmail.com).',
+  websites: 'High-converting landing pages (from $300) and business websites (from $700) for DTC and e-commerce brands. Designed to convert, built for speed.',
+  'ai-ugc': 'AI UGC video ads for DTC brands from $20. Creator-style product videos made with AI — no shoot, no creator fees, 48-hour delivery.',
+  automation: 'n8n workflow automation, AI agent deployment, and CRM sync for agencies and service businesses. Free automation audit.',
 };
 
 // Helper function to sync SEO, OpenGraph & Canonical tags dynamically
@@ -245,6 +254,24 @@ export default function App() {
         {currentPage === 'contact' && (
           <ContactPage
             onOpenDemoModal={openDemoModal}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'websites' && (
+          <WebsitesPage
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'ai-ugc' && (
+          <UgcPage
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'automation' && (
+          <AutomationPage
             onNavigate={handleNavigate}
           />
         )}
