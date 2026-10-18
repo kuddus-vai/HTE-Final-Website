@@ -132,12 +132,11 @@ export const UgcPage: React.FC<UgcPageProps> = ({ onNavigate }) => {
         <div className="mt-10 grid sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/40">
-              <video
-                controls
-                playsInline
-                preload="metadata"
+              <img
+                src={`/samples/ugc-creator-${i}.jpg`}
+                alt={`AI-generated creator ${i} holding a product`}
+                loading="lazy"
                 className="w-full aspect-[9/16] object-cover bg-black"
-                src={`/samples/ugc-creator-${i}.mp4`}
               />
               <div className="p-4 flex items-center justify-between">
                 <span className="text-sm font-semibold text-slate-200">AI Creator {i}</span>
