@@ -49,6 +49,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems: { id: PageId; label: string; highlight?: boolean; badge?: string }[] = [
     { id: 'home', label: t.navbar.home },
+    { id: 'websites', label: 'Websites', highlight: true, badge: 'New' },
+    { id: 'ai-ugc', label: 'AI UGC Ads', highlight: true, badge: 'New' },
+    { id: 'automation', label: 'Automation' },
     { id: 'services', label: t.navbar.services },
     { id: 'products', label: t.navbar.products },
     { id: 'demos', label: t.navbar.demos, highlight: true, badge: t.navbar.liveBadge },
