@@ -33,7 +33,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   onLaunchLiveDemo
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [spotlightTab, setSpotlightTab] = useState<'wpl' | 'optimum'>('wpl');
+  const [spotlightTab, setSpotlightTab] = useState<'urban-beast' | 'optimum'>('urban-beast');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const categories = [
@@ -44,7 +44,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
     { id: 'software', label: 'Enterprise & POS Software', count: LIVE_DEMOS_DATA.filter(d => d.category === 'software').length },
   ];
 
-  const featuredWpl = LIVE_DEMOS_DATA.find(d => d.id === 'demo-wpl-pureflow') || LIVE_DEMOS_DATA[0];
+  const featuredUrbanBeast = LIVE_DEMOS_DATA.find(d => d.id === 'demo-urban-beast-bd') || LIVE_DEMOS_DATA[4] || LIVE_DEMOS_DATA[0];
   const featuredOptimum = LIVE_DEMOS_DATA.find(d => d.id === 'demo-optimum-power') || LIVE_DEMOS_DATA[1];
   const websiteDemos = LIVE_DEMOS_DATA.filter(d => d.category === 'websites');
   const intelligenceDemo = LIVE_DEMOS_DATA.find(d => d.category === 'intelligence') || LIVE_DEMOS_DATA[0];
@@ -62,16 +62,16 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   };
 
   const renderCard = (demo: LiveDemoItem, isProductionWebsite = false) => {
-    const isWpl = demo.id === 'demo-wpl-pureflow';
-    const isFeatured = demo.id === 'demo-optimum-power' || isWpl;
+    const isUrbanBeast = demo.id === 'demo-urban-beast-bd';
+    const isFeatured = demo.id === 'demo-optimum-power' || isUrbanBeast;
     const isAumecho = demo.id === 'demo-aumecho-sanctuary';
 
     return (
       <div
         key={demo.id}
         className={`rounded-2xl bg-[#0C101C] overflow-hidden flex flex-col justify-between transition-all duration-300 group shadow-lg hover:-translate-y-1 ${
-          isWpl
-            ? 'border-2 border-cyan-500/70 ring-1 ring-cyan-500/25 shadow-cyan-500/10'
+          isUrbanBeast
+            ? 'border-2 border-amber-500/70 ring-1 ring-amber-500/25 shadow-amber-500/10'
             : isFeatured 
             ? 'border-2 border-[#FF7A00]/70 ring-1 ring-[#FF7A00]/25 shadow-[#FF7A00]/10' 
             : isAumecho
@@ -98,10 +98,10 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
 
           {/* Top Status Pill */}
           <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-            {isWpl ? (
-              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 backdrop-blur-md flex items-center gap-1.5 shadow-md">
-                <Star className="w-3 h-3 text-cyan-400 fill-current" />
-                <span>Featured US Flagship</span>
+            {isUrbanBeast ? (
+              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-amber-950/90 text-amber-300 border border-amber-500/50 backdrop-blur-md flex items-center gap-1.5 shadow-md">
+                <Star className="w-3 h-3 text-amber-400 fill-current" />
+                <span>Featured Live eCommerce</span>
               </span>
             ) : isFeatured ? (
               <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-[#FF7A00]/25 text-[#FFB370] border border-[#FF7A00]/60 backdrop-blur-md flex items-center gap-1.5 shadow-md">
@@ -241,7 +241,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
         <div className="pt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-left">
           <div className="p-3 rounded-xl bg-[#0E1424] border border-white/10">
             <div className="text-[10px] font-mono text-slate-400 uppercase">Featured Flagships</div>
-            <div className="text-base sm:text-lg font-mono font-bold text-[#FFA149]">WPL (US) & Optimum</div>
+            <div className="text-base sm:text-lg font-mono font-bold text-[#FFA149]">Urban Beast & Optimum</div>
           </div>
           <div className="p-3 rounded-xl bg-[#0E1424] border border-white/10">
             <div className="text-[10px] font-mono text-slate-400 uppercase">Live Client Deployments</div>
@@ -266,15 +266,15 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
             <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Spotlight Flagship:</span>
             <div className="inline-flex p-1 rounded-xl bg-[#0B101D] border border-white/10">
               <button
-                onClick={() => setSpotlightTab('wpl')}
+                onClick={() => setSpotlightTab('urban-beast')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                  spotlightTab === 'wpl'
-                    ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
+                  spotlightTab === 'urban-beast'
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                <span>🇺🇸 WPL PureFlow (USA)</span>
-                <span className="text-[10px] font-mono opacity-80">Liquid Futurism</span>
+                <span>🔥 Urban Beast BD</span>
+                <span className="text-[10px] font-mono opacity-80">eCommerce Flagship</span>
               </button>
               <button
                 onClick={() => setSpotlightTab('optimum')}
@@ -291,69 +291,69 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
           </div>
 
           <div className="text-xs font-mono text-slate-400 hidden sm:block">
-            {spotlightTab === 'wpl' ? 'N 40° 42\' • W 74° 00\' | Sheffield LDN → NYC' : 'Dhaka 1217 • Heavy Power Grid'}
+            {spotlightTab === 'urban-beast' ? 'ShopFlow™ Streetwear Apparel & Drop Commerce' : 'Dhaka 1217 • Heavy Power Grid'}
           </div>
         </div>
 
-        {/* WPL PureFlow Spotlight Banner */}
-        {spotlightTab === 'wpl' ? (
-          <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#030914] via-[#071728] to-[#040C1A] border-2 border-cyan-500/60 relative overflow-hidden shadow-2xl shadow-cyan-500/10 transition-all duration-300">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        {/* Urban Beast BD Spotlight Banner */}
+        {spotlightTab === 'urban-beast' ? (
+          <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#140D04] via-[#1F1407] to-[#0A0703] border-2 border-amber-500/60 relative overflow-hidden shadow-2xl shadow-amber-500/10 transition-all duration-300">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
               <div className="space-y-3.5 max-w-3xl">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-cyan-950/90 text-cyan-300 border border-cyan-500/60 flex items-center gap-1.5 shadow-sm">
-                    <Star className="w-3.5 h-3.5 text-cyan-400 fill-current" />
-                    <span>★ FEATURED US FLAGSHIP CLIENT PROJECT</span>
+                  <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-amber-950/90 text-amber-300 border border-amber-500/60 flex items-center gap-1.5 shadow-sm">
+                    <Star className="w-3.5 h-3.5 text-amber-400 fill-current" />
+                    <span>★ FEATURED LIVE ECOMMERCE CLIENT PROJECT</span>
                   </span>
-                  <span className="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2.5 py-1 rounded-full border border-cyan-500/40 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                    <span>Live in Production • Sheffield UK → New York, USA</span>
+                  <span className="text-xs font-mono text-amber-300 bg-amber-950/60 px-2.5 py-1 rounded-full border border-amber-500/40 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    <span>Live in Production • Streetwear Apparel</span>
                   </span>
                   <span className="text-[11px] font-mono text-slate-400 bg-black/40 px-2.5 py-0.5 rounded border border-white/10 hidden sm:inline-block">
-                    N 40° 42' • W 74° 00'
+                    ShopFlow™ High-Conversion
                   </span>
                 </div>
 
                 <div>
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-['Outfit',sans-serif] tracking-tight">
-                    WPL PureFlow — Purity by Design
+                    Urban Beast BD — Streetwear Flagship
                   </h2>
-                  <p className="text-xs font-mono text-cyan-400 mt-0.5">
-                    Liquid Futurism in Advanced Water Purification, Reverse Osmosis & Deionization (USA)
+                  <p className="text-xs font-mono text-amber-400 mt-0.5">
+                    Modern Direct-To-Consumer Apparel Commerce, Dynamic Lookbooks & Automated Logistics
                   </p>
                 </div>
 
                 <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                  Liquid Futurism in advanced water purification. Built in Sheffield since 1992, now plumbed into 11,000 American homes, medical clinics, and premier hospitality properties — quietly, under the counter, for the next thirty years. Designed with atmospheric fluid dynamics, deep cyan liquid aesthetics, and interactive architectural specifications.
+                  Modern direct-to-consumer apparel commerce platform with high-converting lookbooks, instant bKash checkout, and automated Steadfast/Pathao courier delivery. Engineered with 0.68s First Contentful Paint, mobile-first 60fps interaction speed, and unified multi-branch inventory tracking.
                 </p>
 
                 {/* Highlight Metric Badges */}
                 <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
-                  <span className="px-3 py-1 rounded-lg bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>0.52s First Contentful Paint</span>
+                  <span className="px-3 py-1 rounded-lg bg-amber-950/60 border border-amber-500/30 text-amber-300 flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-amber-400" />
+                    <span>0.68s First Contentful Paint</span>
                   </span>
                   <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-emerald-400 flex items-center gap-1.5">
-                    <span>💧</span>
-                    <span>11,000+ US Installations</span>
+                    <span>⚡</span>
+                    <span>+34% Conversion Gain</span>
                   </span>
                   <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200 flex items-center gap-1.5">
-                    <Globe className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Awwwards-Grade Liquid Futurism</span>
+                    <Globe className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Steadfast & Pathao 2-Way Sync</span>
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2 font-mono text-xs text-slate-400 pt-1">
                   <span>Production Domain:</span>
                   <a 
-                    href="https://usa-pureflow.pages.dev/" 
+                    href="https://kuddus-vai.github.io/Urban-Beast-BD-/" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="underline text-white hover:text-cyan-300 flex items-center gap-1 font-semibold"
+                    className="underline text-white hover:text-amber-300 flex items-center gap-1 font-semibold"
                   >
-                    <span>https://usa-pureflow.pages.dev/</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>https://kuddus-vai.github.io/Urban-Beast-BD-/</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
                   </a>
                 </div>
               </div>
@@ -361,29 +361,29 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
               {/* Action CTAs */}
               <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0 min-w-[240px]">
                 <a
-                  href="https://usa-pureflow.pages.dev/"
+                  href="https://kuddus-vai.github.io/Urban-Beast-BD-/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-5 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl shadow-cyan-500/30 transition-all"
+                  className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl shadow-amber-500/30 transition-all"
                 >
-                  <span>Visit usa-pureflow.pages.dev</span>
+                  <span>Visit Urban Beast BD</span>
                   <ExternalLink className="w-4 h-4" />
                 </a>
                 <button
-                  onClick={() => onLaunchLiveDemo(featuredWpl)}
+                  onClick={() => onLaunchLiveDemo(featuredUrbanBeast)}
                   className="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 border border-white/15 transition-colors"
                 >
-                  <Play className="w-3.5 h-3.5 fill-current text-cyan-400" />
+                  <Play className="w-3.5 h-3.5 fill-current text-amber-400" />
                   <span>Launch in Device Simulator</span>
                 </button>
                 <button
-                  onClick={(e) => handleCopyLink(featuredWpl, e)}
+                  onClick={(e) => handleCopyLink(featuredUrbanBeast, e)}
                   className="px-5 py-2.5 rounded-xl bg-black/40 hover:bg-black/60 text-slate-300 hover:text-white font-mono text-xs flex items-center justify-center gap-1.5 border border-white/10 transition-colors"
                 >
-                  {copiedId === featuredWpl.id ? (
+                  {copiedId === featuredUrbanBeast.id ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-cyan-400" />
-                      <span className="text-cyan-400">Live URL Copied</span>
+                      <Check className="w-3.5 h-3.5 text-amber-400" />
+                      <span className="text-amber-400">Live URL Copied</span>
                     </>
                   ) : (
                     <>

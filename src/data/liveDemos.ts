@@ -14,15 +14,15 @@ export interface ShopflowWebsiteDemo {
 
 export const SHOPFLOW_WEBSITES_DEMO: ShopflowWebsiteDemo[] = [
   {
-    id: 'wpl-pureflow',
-    name: 'WPL PureFlow USA',
-    url: 'https://usa-pureflow.pages.dev/',
-    category: 'Liquid Futurism & Water Tech',
-    badge: '★ Featured US Project',
-    description: 'Awwwards-grade digital experience for advanced reverse osmosis & deionization water purification in elite US residences.',
-    previewImageUrl: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&auto=format&fit=crop&q=80',
-    metrics: '0.52s LCP • Liquid Futurism',
-    tags: ['Awwwards-Level Design', 'Liquid Futurism', 'US Engineering', 'Reverse Osmosis']
+    id: 'urban-beast',
+    name: 'Urban Beast BD',
+    url: 'https://kuddus-vai.github.io/Urban-Beast-BD-/',
+    category: 'ShopFlow™ eCommerce',
+    badge: '★ Featured Live eCommerce',
+    description: 'Trendy streetwear storefront with dynamic lookbook, fast mobile checkout, and automated courier sync.',
+    previewImageUrl: 'https://kuddus-vai.github.io/Urban-Beast-BD-/banners/702919686_1508813661029736_2615736338465446558_n.jpeg',
+    metrics: '0.68s First Contentful Paint',
+    tags: ['★ Featured eCommerce', 'Streetwear', '1-Tap Checkout', 'Steadfast/Pathao Sync']
   },
   {
     id: 'optimum-power',
@@ -56,17 +56,6 @@ export const SHOPFLOW_WEBSITES_DEMO: ShopflowWebsiteDemo[] = [
     previewImageUrl: 'https://storage.googleapis.com/gpt-engineer-file-uploads/CnE95iaVJRU3T3nDyvyFEzucYY92/social-images/social-1777315086034-AumEcho_thumbnail.webp',
     metrics: '108x Japa Chants • YouTube Media Sync',
     tags: ['YouTube Channel Website', 'Sanskrit Mantras', 'Vedic Chants', 'Creator Platform']
-  },
-  {
-    id: 'urban-beast',
-    name: 'Urban Beast BD',
-    url: 'https://kuddus-vai.github.io/Urban-Beast-BD-/',
-    category: 'ShopFlow™ eCommerce',
-    badge: 'Streetwear & Apparel',
-    description: 'Trendy streetwear storefront with dynamic lookbook, fast mobile checkout, and automated courier sync.',
-    previewImageUrl: 'https://kuddus-vai.github.io/Urban-Beast-BD-/banners/702919686_1508813661029736_2615736338465446558_n.jpeg',
-    metrics: '0.68s First Contentful Paint',
-    tags: ['Streetwear', '1-Tap Checkout', 'Courier Sync']
   },
   {
     id: 'one-outfit',
