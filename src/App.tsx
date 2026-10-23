@@ -18,8 +18,9 @@ import { ContactPage } from './pages/ContactPage';
 import { WebsitesPage } from './pages/WebsitesPage';
 import { UgcPage } from './pages/UgcPage';
 import { AutomationPage } from './pages/AutomationPage';
+import { OffersPage } from './pages/OffersPage';
 
-const VALID_PAGES: PageId[] = ['home', 'services', 'products', 'demos', 'portfolio', 'pricing', 'about', 'contact', 'websites', 'ai-ugc', 'automation'];
+const VALID_PAGES: PageId[] = ['home', 'services', 'products', 'demos', 'portfolio', 'pricing', 'about', 'contact', 'websites', 'ai-ugc', 'automation', 'offers'];
 
 const PAGE_TITLES: Record<PageId, string> = {
   home: 'High-Tech Enterprise | Smart Solutions • Digital Growth • WhatsApp AI & Automation',
@@ -33,6 +34,7 @@ const PAGE_TITLES: Record<PageId, string> = {
   websites: 'High-Converting Websites & Landing Pages for DTC Brands | High-Tech Enterprise',
   'ai-ugc': 'AI UGC Video Ads from $20 for DTC Brands | High-Tech Enterprise',
   automation: 'n8n Workflow Automation & AI Agents | High-Tech Enterprise',
+  offers: 'All Offers & Public Prices — Websites, AI UGC Ads & Automation | High-Tech Enterprise',
 };
 
 const PAGE_DESCRIPTIONS: Record<PageId, string> = {
@@ -47,6 +49,7 @@ const PAGE_DESCRIPTIONS: Record<PageId, string> = {
   websites: 'High-converting landing pages (from $300) and business websites (from $700) for DTC and e-commerce brands. Designed to convert, built for speed.',
   'ai-ugc': 'AI UGC video ads for DTC brands from $20. Creator-style product videos made with AI — no shoot, no creator fees, 48-hour delivery.',
   automation: 'n8n workflow automation, AI agent deployment, and CRM sync for agencies and service businesses. Free automation audit.',
+  offers: 'Every High-Tech Enterprise offer on one page: websites from $700, landing pages from $300, AI UGC video ads from $20, Fiverr packages, and automation with a free audit.',
 };
 
 // Helper function to sync SEO, OpenGraph & Canonical tags dynamically
@@ -272,6 +275,12 @@ export default function App() {
 
         {currentPage === 'automation' && (
           <AutomationPage
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'offers' && (
+          <OffersPage
             onNavigate={handleNavigate}
           />
         )}
