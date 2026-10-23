@@ -52,6 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'websites', label: 'Websites', highlight: true, badge: 'New' },
     { id: 'ai-ugc', label: 'AI UGC Ads', highlight: true, badge: 'New' },
     { id: 'automation', label: 'Automation' },
+    { id: 'offers', label: t.navbar.offers, highlight: true, badge: 'New' },
     { id: 'services', label: t.navbar.services },
     { id: 'products', label: t.navbar.products },
     { id: 'demos', label: t.navbar.demos, highlight: true, badge: t.navbar.liveBadge },
