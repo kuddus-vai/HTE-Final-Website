@@ -9,6 +9,7 @@ export interface TranslationDictionary {
     pricing: string;
     about: string;
     contact: string;
+    offers: string;
     freeDemoBtn: string;
     pulseMonitor: string;
     alwaysOpen: string;
@@ -161,6 +162,55 @@ export interface TranslationDictionary {
       prototypeLabel: string;
     };
   };
+  offers: {
+    badge: string;
+    titleA: string;
+    titleB: string;
+    subtitle: string;
+    quoteCta: string;
+    ugcCta: string;
+    popularLabel: string;
+    webHeading: string;
+    webSub: string;
+    landing: OfferPlanText;
+    website: OfferPlanText;
+    webMoreCta: string;
+    ugcHeading: string;
+    ugcSub: string;
+    ugcSingle: OfferPlanText;
+    ugcPack: OfferPlanText;
+    ugcSignature: OfferPlanText;
+    ugcMoreCta: string;
+    fiverrHeading: string;
+    fiverrSub: string;
+    fiverrWebName: string;
+    fiverrWebLines: string;
+    fiverrWebCta: string;
+    fiverrUgcName: string;
+    fiverrUgcLines: string;
+    fiverrUgcCta: string;
+    automationHeading: string;
+    automationSub: string;
+    auditCta: string;
+    automationItems: { name: string; blurb: string; features: string[] }[];
+    protocolHeading: string;
+    protocolSub: string;
+    protocolSteps: { title: string; text: string }[];
+    faqHeading: string;
+    faqs: { q: string; a: string }[];
+    finalHeading: string;
+    finalSub: string;
+    finalCta: string;
+  };
+}
+
+export interface OfferPlanText {
+  name: string;
+  price: string;
+  unit: string;
+  blurb: string;
+  features: string[];
+  cta: string;
 }
 
 export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
@@ -173,6 +223,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       pricing: 'প্যাকেজের দাম ও খরচ',
       about: 'আমাদের সম্পর্কে',
       contact: 'যোগাযোগ',
+      offers: 'অফারসমূহ',
       freeDemoBtn: 'ফ্রি ডেমো নিন',
       pulseMonitor: 'পালস মনিটর',
       alwaysOpen: '২৪/৭ সবসময় খোলা',
@@ -180,6 +231,115 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       langSwitch: 'বাংলা (BD)',
       liveBadge: '১০+ লাইভ সাইট',
       activeLanguage: 'বাংলা'
+    },
+    offers: {
+      badge: 'সব সার্ভিস · প্রকাশ্য দাম · এক পেজে',
+      titleA: 'সব অফার।',
+      titleB: 'প্রকাশ্য দাম।',
+      subtitle: 'ওয়েবসাইট, ল্যান্ডিং পেজ, AI UGC ভিডিও বিজ্ঞাপন ও অটোমেশন সিস্টেম — হাই-টেক এন্টারপ্রাইজের সবকিছু, দামসহ এই পেজেই। দাম জানতে আলাদা কল করার ঝামেলা নেই।',
+      quoteCta: 'ফ্রি কোট নিন',
+      ugcCta: 'AI UGC বিজ্ঞাপন দেখুন',
+      popularLabel: 'সবচেয়ে জনপ্রিয়',
+      webHeading: 'ওয়েবসাইট ও ল্যান্ডিং পেজ',
+      webSub: 'DTC, ই-কমার্স ও সার্ভিস ব্র্যান্ডের জন্য কনভার্সন-কেন্দ্রিক বিল্ড। শুরুতে ৫০% ডিপোজিট, লঞ্চে বাকি ৫০%।',
+      landing: {
+        name: 'ল্যান্ডিং পেজ',
+        price: '$300',
+        unit: 'থেকে',
+        blurb: 'ভিজিটরকে ক্রেতায় রূপান্তর করতে তৈরি একটি কনভার্সন-কেন্দ্রিক পেজ।',
+        features: ['কনভার্সন-প্রথম কপি স্ট্রাকচার', 'মোবাইল-ফার্স্ট রেসপন্সিভ ডিজাইন', 'সাব-সেকেন্ড লোড টাইম', 'কন্টাক্ট / চেকআউট CTA ওয়্যারিং', 'বেসিক SEO + অ্যানালিটিক্স সেটআপ'],
+        cta: 'আমার পেজ শুরু করুন',
+      },
+      website: {
+        name: 'বিজনেস ওয়েবসাইট',
+        price: '$700',
+        unit: 'থেকে',
+        blurb: 'সারাক্ষণ বিক্রির জন্য ইঞ্জিনিয়ার করা পূর্ণাঙ্গ মাল্টি-পেজ ওয়েবসাইট।',
+        features: ['ল্যান্ডিং পেজের সবকিছু', 'সর্বোচ্চ ৮টি পেজ', 'ব্লগ / CMS রেডি', 'অ্যাডভান্সড SEO সেটআপ', 'স্পিড + Core Web Vitals টিউনড'],
+        cta: 'আমার ওয়েবসাইট বানান',
+      },
+      webMoreCta: 'ওয়েবসাইটের পূর্ণ বিবরণ',
+      ugcHeading: 'AI UGC ভিডিও বিজ্ঞাপন',
+      ugcSub: 'AI দিয়ে তৈরি ক্রিয়েটর-স্টাইল প্রোডাক্ট ভিডিও — শুটিং নেই, ক্রিয়েটর ফি নেই, শিডিউলের অপেক্ষা নেই।',
+      ugcSingle: {
+        name: 'সিঙ্গেল স্পট',
+        price: '$20',
+        unit: 'প্রতি ২০-সেকেন্ড ভিডিও',
+        blurb: 'ঝুঁকিহীন প্রথম অভিজ্ঞতা। একটি প্রোডাক্ট, একটি হুক অ্যাঙ্গেল।',
+        features: ['২০-সেকেন্ড ক্রিয়েটর-স্টাইল ভিডিও', 'ভার্টিক্যাল ৯:১৬ ফরম্যাট', '১ রাউন্ড রিভিশন', '৪৮ ঘণ্টায় ডেলিভারি'],
+        cta: 'সিঙ্গেল স্পট ট্রায়াল করুন',
+      },
+      ugcPack: {
+        name: 'ক্রিয়েটিভ প্যাক',
+        price: '$450',
+        unit: '৩০টি ভিডিও · প্রতিটি $15',
+        blurb: 'এক মাসের বিজ্ঞাপন ক্রিয়েটিভ — তৈরি মাত্র কয়েক দিনে।',
+        features: ['৩০ × ২০-সেকেন্ড ভিডিও', 'টেস্টের জন্য একাধিক হুক অ্যাঙ্গেল', 'ভার্টিক্যাল ৯:১৬ ফরম্যাট', '২ রাউন্ড রিভিশন', 'অগ্রাধিকার ডেলিভারি'],
+        cta: 'ক্রিয়েটিভ স্কেল করুন',
+      },
+      ugcSignature: {
+        name: 'সিগনেচার স্পট',
+        price: '$55',
+        unit: 'প্রতি ৬০-সেকেন্ড ভিডিও',
+        blurb: 'হিরো প্লেসমেন্ট ও ল্যান্ডিং পেজের জন্য দীর্ঘতর গল্প বলা।',
+        features: ['৬০-সেকেন্ড ভিডিও', 'স্ক্রিপ্ট + হুক ডেভেলপমেন্ট', 'ভার্টিক্যাল + স্কয়ার ফরম্যাট', '২ রাউন্ড রিভিশন'],
+        cta: 'সিগনেচার স্পট অর্ডার করুন',
+      },
+      ugcMoreCta: 'AI UGC কীভাবে কাজ করে',
+      fiverrHeading: 'Fiverr দিয়ে অর্ডার করতে চান?',
+      fiverrSub: 'একই টিম, একই কাজ — সরাসরি না করে Fiverr দিয়ে অর্ডার করুন।',
+      fiverrWebName: 'Fiverr-এ ওয়েবসাইট প্যাকেজ',
+      fiverrWebLines: 'স্টার্টার ওয়েবসাইট — $150 · বিজনেস ওয়েবসাইট — $350 · ই-কমার্স / ফুল-স্ট্যাক ওয়েবসাইট — $700।',
+      fiverrWebCta: 'Fiverr-এ ওয়েবসাইট অর্ডার করুন',
+      fiverrUgcName: 'Fiverr-এ AI UGC ভিডিও বিজ্ঞাপন',
+      fiverrUgcLines: 'আমাদের Fiverr গিগ দিয়ে AI UGC ভিডিও বিজ্ঞাপন অর্ডার করুন — প্যাকেজ বেছে ওখানেই চেকআউট করুন।',
+      fiverrUgcCta: 'Fiverr-এ AI UGC অর্ডার করুন',
+      automationHeading: 'অটোমেশন সিস্টেম',
+      automationSub: 'ফ্রি অডিটের পর আপনার ব্যবসা অনুযায়ী স্কোপ নির্ধারণ — কিছু বানানোর আগেই পাবেন ফিক্সড কোট।',
+      auditCta: 'ফ্রি অটোমেশন অডিট নিন',
+      automationItems: [
+        {
+          name: 'n8n ওয়ার্কফ্লো অটোমেশন',
+          blurb: 'আপনার টুলগুলোকে সংযুক্ত করে পুনরাবৃত্ত কাজ শেষ করে এমন কাস্টম n8n ওয়ার্কফ্লো।',
+          features: ['ওয়ার্কফ্লো অডিট ও ম্যাপিং', 'কাস্টম n8n বিল্ড', 'API + ওয়েবহুক ইন্টিগ্রেশন', 'এরর হ্যান্ডলিং ও মনিটরিং'],
+        },
+        {
+          name: 'WhatsApp ও Messenger চ্যাটবট',
+          blurb: 'অটো-রিপ্লাই বট যা সারাক্ষণ কাস্টমারের জবাব দেয় এবং প্রয়োজনে আপনার হাতে হস্তান্তর করে।',
+          features: ['WhatsApp + Messenger অটো-রিপ্লাই', 'ক্যাটালগ ও অর্ডার ইনটেক', 'হিউম্যান হ্যান্ডঅফ নিয়ম', 'প্রতিটি চ্যাট CRM-এ লগ'],
+        },
+        {
+          name: 'CRM সেটআপ ও সিঙ্ক (GoHighLevel)',
+          blurb: 'আপনার CRM, অর্ডার ফ্লো ও অপারেশন অবশেষে একে অপরের সাথে কথা বলবে।',
+          features: ['GoHighLevel + CRM সেটআপ', 'কুরিয়ার ওয়েবহুক সিঙ্ক', 'লিড পাইপলাইন অটোমেশন', 'রিপোর্টিং ড্যাশবোর্ড'],
+        },
+        {
+          name: 'AI এজেন্ট ডেপ্লয়মেন্ট',
+          blurb: 'AI এজেন্ট যা জবাব দেয়, যাচাই করে ও কাজ করে — আপনার বিদ্যমান স্ট্যাকের ভিতরেই।',
+          features: ['সাপোর্ট ও সেলস এজেন্ট', 'WhatsApp + ওয়েব ডেপ্লয়মেন্ট', 'হিউম্যান হ্যান্ডঅফ নিয়ম', 'প্রতিটি আউটপুটে আপনার অনুমোদন'],
+        },
+        {
+          name: 'লোকাল SEO',
+          blurb: 'কাছের ক্রেতারা যা খুঁজছে, তাতে আপনার ব্যবসা খুঁজে পাওয়া যাক।',
+          features: ['Google Business Profile সেটআপ', 'লোকাল কিওয়ার্ড টার্গেটিং', 'লিস্টিং সবসময় নির্ভুল রাখা', 'ম্যাপস ভিজিবিলিটির মূল বিষয়'],
+        },
+      ],
+      protocolHeading: 'প্রতিটি প্রজেক্ট যেভাবে চলে',
+      protocolSub: 'দ্য অ্যান্টিগ্রাভিটি প্রোটোকল — আমাদের স্বাক্ষর ডেলিভারি পদ্ধতি।',
+      protocolSteps: [
+        { title: 'অডিট', text: 'আমরা আপনার অপারেশন বিশ্লেষণ করে রাজস্ব ক্ষয় করা ম্যানুয়াল বাধাগুলো খুঁজে বের করি।' },
+        { title: 'আর্কিটেক্ট', text: 'কাস্টম সিস্টেম ডিজাইন — কোনো টেমপ্লেট নয়। আপনার টুল, আপনার ওয়ার্কফ্লো, আপনার নিয়ম।' },
+        { title: 'অটোমেট', text: 'আমরা বানাই ও ডেপ্লয় করি। লাইভ হওয়ার আগে প্রতিটি আউটপুট আপনি পর্যালোচনা করেন।' },
+      ],
+      faqHeading: 'প্রশ্নের উত্তর',
+      faqs: [
+        { q: 'ওয়েবসাইট শুরু করতে আমার কাছ থেকে কী লাগবে?', a: 'আপনার অফারের বিবরণ, আপনার কাছে থাকা ব্র্যান্ড অ্যাসেট (লোগো, ছবি) এবং ৫০% ডিপোজিট। কপি স্ট্রাকচার, ডিজাইন ও বিল্ড আমরাই সামলাই।' },
+        { q: 'অটোমেশন প্রজেক্ট কীভাবে শুরু হয়?', a: 'একটি ফ্রি অটোমেশন অডিট দিয়ে: ৩০ মিনিটের কলে আমরা আপনার সবচেয়ে বড় সময়-ক্ষয়গুলো ম্যাপ করি। আমরা একসাথে কাজ না করলেও প্ল্যানটি আপনার কাছেই থাকবে।' },
+        { q: 'প্রথম UGC ভিডিওটি পছন্দ না হলে?', a: 'প্রতিটি অর্ডারে রিভিশন রাউন্ড থাকে, আর $20-এর সিঙ্গেলটি ঠিক এই কারণেই কম ঝুঁকির ট্রায়াল — একবার স্টাইল অনুমোদন করুন, তারপর আত্মবিশ্বাসে স্কেল করুন।' },
+      ],
+      finalHeading: 'কোন অফারটি আপনার জন্য ঠিক বুঝতে পারছেন না?',
+      finalSub: 'আপনার প্রজেক্ট সম্পর্কে বলুন — সেলস কল নয়, ফিক্সড কোট দিয়ে রিপ্লাই দেব।',
+      finalCta: 'আমার ফ্রি কোট নিন',
     },
     hero: {
       trustBadge: '⚡ ব্র্যান্ডের জন্য হাই-কনভার্টিং ওয়েবসাইট ও AI UGC ভিডিও বিজ্ঞাপন',
@@ -335,6 +495,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       pricing: 'Pricing & ROI',
       about: 'About Us',
       contact: 'Contact',
+      offers: 'Offers',
       freeDemoBtn: 'Get Free Demo',
       pulseMonitor: 'Pulse Monitor',
       alwaysOpen: '24/7 Always Open',
@@ -342,6 +503,115 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       langSwitch: 'English (US)',
       liveBadge: '10+ Live Sites',
       activeLanguage: 'English'
+    },
+    offers: {
+      badge: 'Every service · Public prices · One page',
+      titleA: 'Every offer.',
+      titleB: 'Public prices.',
+      subtitle: 'Websites, landing pages, AI UGC video ads, and automation systems — everything High-Tech Enterprise sells, with the prices on the page. No discovery-call pricing games.',
+      quoteCta: 'Get a free quote',
+      ugcCta: 'See AI UGC Ads',
+      popularLabel: 'MOST POPULAR',
+      webHeading: 'Websites & landing pages',
+      webSub: 'Conversion-focused builds for DTC, e-commerce, and service brands. 50% deposit to start, 50% on launch.',
+      landing: {
+        name: 'Landing Page',
+        price: '$300',
+        unit: 'from',
+        blurb: 'A single conversion-focused page built to turn visitors into buyers.',
+        features: ['Conversion-first copy structure', 'Mobile-first responsive design', 'Sub-second load times', 'Contact / checkout CTA wiring', 'Basic SEO + analytics setup'],
+        cta: 'Start my page',
+      },
+      website: {
+        name: 'Business Website',
+        price: '$700',
+        unit: 'from',
+        blurb: 'A full multi-page website engineered to sell around the clock.',
+        features: ['Everything in Landing Page', 'Up to 8 pages', 'Blog / CMS ready', 'Advanced SEO setup', 'Speed + Core Web Vitals tuned'],
+        cta: 'Build my website',
+      },
+      webMoreCta: 'Full website details',
+      ugcHeading: 'AI UGC video ads',
+      ugcSub: 'Creator-style product videos made with AI — no shoot, no creator fees, no waiting on schedules.',
+      ugcSingle: {
+        name: 'Single Spot',
+        price: '$20',
+        unit: 'per 20-second video',
+        blurb: 'A risk-free first taste. One product, one hook angle.',
+        features: ['20-second creator-style video', 'Vertical 9:16 format', '1 revision round', 'Delivery in 48 hours'],
+        cta: 'Try a single spot',
+      },
+      ugcPack: {
+        name: 'Creative Pack',
+        price: '$450',
+        unit: '30 videos · $15 each',
+        blurb: 'A full month of ad creatives, produced in days.',
+        features: ['30 × 20-second videos', 'Multiple hook angles to test', 'Vertical 9:16 format', '2 revision rounds', 'Priority delivery'],
+        cta: 'Scale my creatives',
+      },
+      ugcSignature: {
+        name: 'Signature Spot',
+        price: '$55',
+        unit: 'per 60-second video',
+        blurb: 'Longer storytelling for hero placements and landing pages.',
+        features: ['60-second video', 'Script + hook development', 'Vertical + square formats', '2 revision rounds'],
+        cta: 'Order the signature spot',
+      },
+      ugcMoreCta: 'How AI UGC works',
+      fiverrHeading: 'Prefer ordering on Fiverr?',
+      fiverrSub: 'Same team, same work — ordered through Fiverr instead of direct.',
+      fiverrWebName: 'Website packages on Fiverr',
+      fiverrWebLines: 'Starter Website — $150 · Business Website — $350 · E-commerce / Full-stack Website — $700.',
+      fiverrWebCta: 'Order a website on Fiverr',
+      fiverrUgcName: 'AI UGC video ads on Fiverr',
+      fiverrUgcLines: 'Order AI UGC video ads through our Fiverr gig — pick a package and check out there.',
+      fiverrUgcCta: 'Order AI UGC on Fiverr',
+      automationHeading: 'Automation systems',
+      automationSub: 'Scoped per business after a free audit — you get a fixed quote before anything is built.',
+      auditCta: 'Get a free automation audit',
+      automationItems: [
+        {
+          name: 'n8n Workflow Automation',
+          blurb: 'Custom n8n workflows that connect your tools and kill repetitive work.',
+          features: ['Workflow audit & mapping', 'Custom n8n builds', 'API + webhook integrations', 'Error handling & monitoring'],
+        },
+        {
+          name: 'WhatsApp & Messenger Chatbots',
+          blurb: 'Auto-reply bots that answer customers around the clock and hand off to you when it matters.',
+          features: ['WhatsApp + Messenger auto-replies', 'Catalog & order intake', 'Human handoff rules', 'Every chat logged to your CRM'],
+        },
+        {
+          name: 'CRM Setup & Sync (GoHighLevel)',
+          blurb: 'Your CRM, order flow, and ops finally talking to each other.',
+          features: ['GoHighLevel + CRM setup', 'Courier webhook sync', 'Lead pipeline automation', 'Reporting dashboards'],
+        },
+        {
+          name: 'AI Agent Deployment',
+          blurb: 'AI agents that answer, qualify, and act — inside your existing stack.',
+          features: ['Support & sales agents', 'WhatsApp + web deployment', 'Human handoff rules', 'You approve every output'],
+        },
+        {
+          name: 'Local SEO',
+          blurb: 'Get found by nearby buyers searching for what you sell.',
+          features: ['Google Business Profile setup', 'Local keyword targeting', 'Listings kept accurate', 'Maps visibility basics'],
+        },
+      ],
+      protocolHeading: 'How every engagement runs',
+      protocolSub: 'The Antigravity Protocol — our signature delivery method.',
+      protocolSteps: [
+        { title: 'Audit', text: 'We deconstruct your operations and find the manual bottlenecks bleeding revenue.' },
+        { title: 'Architect', text: 'A custom system design — no templates. Your tools, your workflow, your rules.' },
+        { title: 'Automate', text: 'We build and deploy. You review every output before anything goes live.' },
+      ],
+      faqHeading: 'Questions, answered',
+      faqs: [
+        { q: 'What do you need from me to start a website?', a: 'Your offer details, any brand assets you have (logo, photos), and 50% deposit. We handle copy structure, design, and build.' },
+        { q: 'How do automation engagements start?', a: 'With a free automation audit: a 30-minute call where we map your biggest time leaks. You keep the plan even if we don\'t work together.' },
+        { q: 'What if the first UGC video misses the mark?', a: 'Every order includes revision rounds, and the $20 single exists precisely as a low-risk trial — approve the style once, then scale with confidence.' },
+      ],
+      finalHeading: 'Not sure which offer fits?',
+      finalSub: 'Tell us about your project — we reply with a fixed quote, not a sales call.',
+      finalCta: 'Get my free quote',
     },
     hero: {
       trustBadge: '⚡ High-Converting Websites & AI UGC Video Ads for Brands',
