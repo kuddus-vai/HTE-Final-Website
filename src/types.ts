@@ -64,7 +64,7 @@ export interface OfficeLocation {
   timezone: string;
 }
 
-export type PageId = 'home' | 'services' | 'products' | 'demos' | 'portfolio' | 'pricing' | 'about' | 'contact' | 'websites' | 'ai-ugc' | 'automation';
+export type PageId = 'home' | 'services' | 'products' | 'demos' | 'portfolio' | 'pricing' | 'about' | 'contact' | 'websites' | 'ai-ugc' | 'automation' | 'offers';
 
 export interface LiveDemoItem {
   id: string;
